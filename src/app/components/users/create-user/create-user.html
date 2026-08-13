@@ -1,0 +1,67 @@
+<div class="titulo-tabla"><h3>{{ titulo }}</h3> </div>
+<div class="card-form" style="width: 40%;">
+    <form [formGroup]="formulario" autocomplete="off">
+        @if(modoEdicion){
+            <div class="alert alert-primary" role="alert" style="font-size: .8em;">
+                <h6>Ten en cuenta que:</h6>
+                <hr>
+                Al cambiar la contraseña, tenga en cuenta que la sesión se cerrará para que inicies con las nuevas credenciales.
+            </div>
+        }
+        
+        <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control form-control-sm mInput minuscula" formControlName="email">
+            <mat-error>{{ validar('email') }}</mat-error>
+        </div>
+
+        <div class="row">
+            @if(!modoEdicion){
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-control form-control-sm mInput" formControlName="contrasena">
+                    <mat-error>{{ validar('contrasena') }}</mat-error>
+                </div>
+
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">Confirmar contraseña</label>
+                    <input type="password" class="form-control form-control-sm mInput" formControlName="confirmar">
+                    <mat-error>{{ validar('confirmar') }}</mat-error>
+                </div>
+            }
+            
+            <div class="mb-3 col-md-6">
+                <label class="form-label">Rol</label>
+                <mat-select class="mSelect" formControlName="id_rol">
+                    @for (item of roles; track item.id) {
+                        <mat-option [value]="item.id" class="mInput-option">
+                            {{ item.rol }}
+                        </mat-option>
+                    }
+                </mat-select>
+                <mat-error>{{ validar('rol') }}</mat-error>                
+            </div>
+        </div>
+        
+    </form>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-start gap-2 flex-wrap">
+
+            <button type="button"
+                    class="btn btn-sm btn-aceptar d-flex align-items-center"
+                    (click)="aceptar()">
+                <fa-icon [icon]="faCheck" class="me-2"></fa-icon>
+                <span>Aceptar</span>
+            </button>
+
+            <button type="button"
+                    class="btn btn-sm btn-cancelar d-flex align-items-center"
+                    routerLink="/usuarios">
+                <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+                <span>Cancelar</span>
+            </button>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+@if (opcion) {
+<div class="spinner-overlay">
+    <div class="spinner-card">
+        <!-- Spinner animado con CSS puro -->
+        <div class="spinner"></div>
+        @if (mensaje) {
+        <p class="spinner-text">{{ mensaje }}</p>
+        }
+    </div>
+</div>
+}

@@ -1,0 +1,28 @@
+.input-password {
+    position: relative;
+    width: 100%;
+}
+
+.input-password .mInput {
+    padding-right: 10px !important;
+}
+
+.btn-eye {
+    position: absolute;
+    right: 1px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    background-color: #f5f5f5;
+    color: #020b8f;
+    width: 40px;
+    padding: 3px;
+    cursor: pointer;
+    border-radius: 0 3px 3px 0;
+    border-left: 1px solid #CCC;
+}
+
+.btn-eye:hover {
+    color: #fd6d0d;
+}

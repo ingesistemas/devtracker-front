@@ -1,0 +1,50 @@
+<div class="titulo-tabla" style="width: 30%;"><h3 style="font-size: 1.5em;">Ingresa tus credenciales</h3> </div>
+<div class="card-form" style="width: 30%;">
+
+    <form [formGroup]="formulario" autocomplete="off">
+        <div class="mb-3">
+            <label class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control form-control-sm mInput minusculas" formControlName="email">
+            <mat-error>{{ validar('email') }}</mat-error>
+        </div>
+
+        <div class="mb-3">
+            <div class="input-password">
+                <input
+                    [type]="mostrarContrasena ? 'text' : 'password'"
+                    class="form-control form-control-sm mInput"
+                    formControlName="contrasena">
+
+                <button
+                    type="button"
+                    class="btn-eye"
+                    (click)="mostrarContrasena = !mostrarContrasena">
+                    <fa-icon [icon]="mostrarContrasena ? faEyeSlash : faEye"></fa-icon>
+                </button>
+                </div>
+            <mat-error>{{ validar('contrasena') }}</mat-error>
+        </div>
+    </form>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-start gap-2 flex-wrap">
+
+            <button type="button"
+                    class="btn btn-sm btn-aceptar d-flex align-items-center"
+                    (click)="aceptar()">
+                <fa-icon [icon]="faCheck" class="me-2"></fa-icon>
+                <span>Aceptar</span>
+            </button>
+
+            <button type="button"
+                    class="btn btn-sm btn-cancelar d-flex align-items-center"
+                    routerLink="">
+                <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+                <span>Cancelar</span>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- <app-spinner-modal [isVisible]="cargando" [mensaje]="mensajeCarga"></app-spinner-modal> -->
+</div>

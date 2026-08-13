@@ -1,0 +1,21 @@
+.modal-content{
+  margin-top: 200px !important;
+}
+
+.exitoso{
+  color: rgb(9, 200, 168);
+}
+
+.error{
+  color: red;
+}
+
+.advertencia{
+  color: orange;
+}
+
+.mensaje{
+  color: rgb(79, 79, 79);
+  font-weight: 400 !important;
+  font-size: .9em;
+}

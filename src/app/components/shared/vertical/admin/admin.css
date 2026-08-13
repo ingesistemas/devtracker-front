@@ -1,0 +1,19 @@
+ul {
+    list-style: none;
+    padding-bottom: 25px;
+}
+
+li{
+    padding: 8px;
+    color: rgb(0, 105, 143);
+}
+
+li:hover{
+    background-color: rgb(238, 238, 238);
+    cursor: pointer;
+}
+
+.icono{
+    color:rgb(2, 84, 155);
+    margin-right: 10px;
+}
