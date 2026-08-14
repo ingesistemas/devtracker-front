@@ -4,6 +4,7 @@ import { IRol } from "./irol";
 export interface IUsuario {
     id: string;
     email: string;
+    nombre: string;
     activo: boolean;
     empresa: IEmpresa | null;
     rol: IRol | null;

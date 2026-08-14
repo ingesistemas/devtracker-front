@@ -41,7 +41,7 @@ export class ListUsers implements OnInit, AfterViewInit {
 
   users: IUsuario[] = []
   
-  displayedColumns: string[] = ['id', 'email', 'rol', 'nombreEmpresa', 'Opciones'];
+  displayedColumns: string[] = ['id', 'email', 'nombre', 'rol', 'nombreEmpresa', 'Opciones'];
   dataSource!: MatTableDataSource<IUsuario>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -60,6 +60,7 @@ export class ListUsers implements OnInit, AfterViewInit {
       const texto = `
         ${data.id}
         ${data.email}
+        ${data.nombre}
         ${data.activo}
         ${data.rol?.rol ?? ''}
         ${data.empresa?.nombre ?? ''}

@@ -31,6 +31,12 @@
             }
             
             <div class="mb-3 col-md-6">
+                <label class="form-label">Nombre usuario</label>
+                <input type="text" class="form-control form-control-sm mInput" formControlName="nombre">
+                <mat-error>{{ validar('nombre') }}</mat-error>
+            </div>
+
+            <div class="mb-3 col-md-6">
                 <label class="form-label">Rol</label>
                 <mat-select class="mSelect" formControlName="id_rol">
                     @for (item of roles; track item.id) {
@@ -42,7 +48,6 @@
                 <mat-error>{{ validar('rol') }}</mat-error>                
             </div>
         </div>
-        
     </form>
 
     <div class="card-footer">

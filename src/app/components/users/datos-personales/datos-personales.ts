@@ -49,7 +49,8 @@ export class DatosPersonales {
 
   formulario = this.fb.group({
     id: [this.datosTempServicio.id()],
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
+    nombre: ['', [Validators.required]]
   });
 
   ngOnInit(): void {
@@ -73,7 +74,8 @@ export class DatosPersonales {
             console.log(this.usuarios)
             this.modoEdicion = true
             this.formulario.patchValue({
-              email: this.usuarios.email
+              email: this.usuarios.email,
+              nombre: this.usuarios.nombre
             })
           } 
         }

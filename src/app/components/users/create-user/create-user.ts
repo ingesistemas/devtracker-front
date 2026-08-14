@@ -54,6 +54,7 @@ export class CreateUser implements OnInit {
     contrasena: ['', [Validators.required, Validators.minLength(6)]],
     confirmar: ['', [Validators.required, Validators.minLength(6)]],
     id_rol: [0, [Validators.required]],
+    nombre: ['', [Validators.required]],
   });
 
   ngOnInit(): void {
@@ -77,6 +78,7 @@ export class CreateUser implements OnInit {
             this.formulario.patchValue({
               id: this.usuarios.id,
               email: this.usuarios.email,
+              nombre: this.usuarios.nombre,
               id_rol: this.usuarios.rol?.id ?? null
             })
             this.formulario.get('contrasena')?.disable();

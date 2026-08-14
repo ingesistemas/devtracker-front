@@ -49,12 +49,17 @@
     margin-right: 20px;
 }
 
+.opcion-tabla{
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
+}
 .opcion-menu {
     color: #484848 !important;
+    padding-bottom: 0px !important;
+   
 }
 
 .opcion-menu:hover {
-    background-color: #dde0e6 !important;
+    background-color: #dedede !important;
 }
 
 .inactivo{

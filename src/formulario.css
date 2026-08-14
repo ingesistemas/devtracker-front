@@ -161,3 +161,7 @@ select.form-select option {
 .minuscula{
     text-transform: lowercase;
 }
+
+.mayuscula {
+    text-transform: uppercase;
+}

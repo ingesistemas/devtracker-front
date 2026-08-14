@@ -8,6 +8,8 @@ import { ListUsers } from './components/users/list-users/list-users';
 import { CreateUser } from './components/users/create-user/create-user';
 import { CambiarContrasena } from './components/users/cambiar-contrasena/cambiar-contrasena';
 import { DatosPersonales } from './components/users/datos-personales/datos-personales';
+import { ListarProyectos } from './components/proyectos/listar-proyectos/listar-proyectos';
+import { CrearProyectos } from './components/proyectos/crear-proyectos/crear-proyectos';
 
 export const routes: Routes = [
     {
@@ -41,6 +43,16 @@ export const routes: Routes = [
     {
         path:'datos-personales',
         component: DatosPersonales,
+        canActivate: [authGuard]
+    },
+    {
+        path:'proyectos',
+        component: ListarProyectos,
+        canActivate: [authGuard]
+    },
+    {
+        path:'crear-proyecto',
+        component: CrearProyectos,
         canActivate: [authGuard]
     }
 ];

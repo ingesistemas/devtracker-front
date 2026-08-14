@@ -1,0 +1,30 @@
+<div class="titulo-tabla"><h3>{{ tituloFormulario }}</h3> </div>
+<div class="card-form" style="width: 40%;">
+    <form [formGroup]="formulario" autocomplete="off">        
+        <div class="mb-3">
+            <label class="form-label">Nombre del proyecto</label>
+            <input type="text" class="form-control form-control-sm mInput mayuscula" formControlName="proyecto">
+            <mat-error>{{ validar('proyecto') }}</mat-error>
+        </div>        
+    </form>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-start gap-2 flex-wrap">
+
+            <button type="button"
+                    class="btn btn-sm btn-aceptar d-flex align-items-center"
+                    (click)="aceptar()">
+                <fa-icon [icon]="faCheck" class="me-2"></fa-icon>
+                <span>Aceptar</span>
+            </button>
+
+            <button type="button"
+                    class="btn btn-sm btn-cancelar d-flex align-items-center"
+                    routerLink="/proyectos">
+                <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+                <span>Cancelar</span>
+            </button>
+
+        </div>
+    </div>
+</div>
