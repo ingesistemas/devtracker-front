@@ -22,7 +22,7 @@ import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-list-users',
   imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatBottomSheetModule, 
-    MatButtonModule, FontAwesomeModule, MatMenuModule, MatIconModule, NgClass ],
+  MatButtonModule, FontAwesomeModule, MatMenuModule, MatIconModule, NgClass ],
   templateUrl: './list-users.html',
   styleUrl: './list-users.css',
 })

@@ -2,6 +2,9 @@
 .contiene-tablas{
     padding: 30px;
     background-color: #ffffff;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .campo-busqueda {
@@ -13,16 +16,79 @@
 }
 
 .titulo-tabla{
-    margin: 5px auto !important;
+    margin: 25px auto !important;
     background-color: #8fc4e55d;
     padding-left: 25px;
     margin-bottom: -25px !important;
     height: 50px;
     color: #176a99;
-   
     display: flex;
     align-items: center;
     width: 100%;
+}
+
+.contiene-filtros{
+    margin: 5px auto !important;
+    background-color: #ffffff;
+    padding-left: 25px;
+    margin-bottom: -25px !important;
+    height: 70px;
+    color: #176a99;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+}
+
+.menu-filtro {
+    position: relative !important;
+    overflow: visible !important;
+    background: #f2f2f2 !important; 
+}
+/* 
+.menu-filtro::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: 25px;
+    width: 10px;
+    height: 10px;
+    background: #f2f2f2;
+    transform: rotate(45deg);
+    z-index: 1;
+}
+
+.btn-texto-filtro{
+  background-color: #f7f7f7 !important;
+  color: rgb(0, 105, 143) !important;
+}
+
+.opcion-inactiva{
+  color: red !important;
+}
+
+.btn-texto-filtro:hover{
+  background-color: #dfdfdf !important;
+}
+
+.filtro-activo{
+  color: rgb(0, 164, 25) !important;
+  background-color: #f6f6f6 !important;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.filtro-compacto{
+  width: auto !important;
+} */
+
+.tabla{
+    width: 100%;
+    min-width: 600px;
+}
+
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+  white-space: nowrap; /* Mantiene el texto en una sola línea */
+  padding: 0 8px;      /* Reduce espacio interno en pantallas pequeñas */
 }
 
 .tabla th {
@@ -52,6 +118,11 @@
 .opcion-tabla{
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
 }
+::ng-deep .opcion-tabla {
+  margin-left: 120px !important; /* Ajusta la cantidad de píxeles hacia la izquierda */
+  margin-top: -30px !important;   /* Lo sube para alinearlo con el botón de los 3 puntos */
+  }
+
 .opcion-menu {
     color: #484848 !important;
     padding-bottom: 0px !important;
@@ -63,9 +134,186 @@
 }
 
 .inactivo{
-    color: rgb(214, 96, 96);
+    color: rgb(214, 96, 96) !important;
 }
 
 table, td, th, tr{
     cursor: pointer;
+}
+
+/** LINK INFORMATIVO***/
+.btn-user-link {
+  /* Reseteo total de estilos de botón nativo */
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+  
+  /* Tipografía alineada a la tabla */
+  font-family: inherit;
+  font-size: inherit;
+  font-weight:normal;
+  text-align: left;
+  
+  /* Apariencia interactiva (tipo enlace/chip) */
+  color: #575757;
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Efecto al pasar el mouse */
+.btn-user-link:hover {
+  color: #005eea;
+  text-decoration: underline;
+}
+
+/* Accesibilidad al enfocar con teclado */
+.btn-user-link:focus-visible {
+  /* outline: 2px solid #f67113; */
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.mat-column-opciones{
+    width: 20px;
+    text-align: center;
+}
+
+.sin-salto{
+    white-space: nowrap !important;
+}
+
+.texto-ajustado {
+    width: 400px;
+    max-width: 400px;
+    min-width: 400px;
+    white-space: normal;
+    text-align: justify;
+}
+
+
+
+/*********** PRIORIDADES ***********/
+/* Contenedor principal flex */
+.header-busqueda {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+
+
+/* Leyenda de colores */
+.leyenda-prioridades {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px; /* Alineación visual con el mat-form-field */
+}
+
+.item-prioridad {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #424242;
+}
+
+/* Estilo de los cuadritos */
+.cuadro {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.contiene-tabla{
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto; /* Permite scroll horizontal si la tabla es más ancha */
+  box-sizing: border-box;
+}
+
+/* Colores de las prioridades (coincidentes con tu tabla) */
+.bg-prioridad-1 { background-color: #ffd8dc; } /* Crítica */
+.bg-prioridad-2 { background-color: #ffecce; } /* Alta */
+.bg-prioridad-3 { background-color: #c8e6c9; } /* Media */
+.bg-prioridad-4 { background-color: #f0f0f0; } /* Baja */
+
+
+:root {
+  --mat-select-enabled-trigger-text-color: rgb(111, 111, 111);
+}
+/* Sobrescribe los estilos globales de Angular Material MDC para filtros activos */
+mat-form-field.filtro-activo .mdc-notched-outline__leading,
+mat-form-field.filtro-activo .mdc-notched-outline__notch,
+mat-form-field.filtro-activo .mdc-notched-outline__trailing {
+   /*  border-color: #028b14 !important; */
+    border-color: #0097d8 !important;
+    border-width: 1px !important;
+}
+
+mat-form-field.filtro-activo .mat-mdc-text-field-wrapper {
+   /*  background-color: rgba(199, 255, 207, 0.544) !important; */
+   background-color: rgba(159, 204, 255, 0.388) !important; 
+   box-shadow: rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+}
+
+mat-form-field.filtro-activo .mdc-floating-label,
+mat-form-field.filtro-activo .mat-mdc-select-value-text,
+mat-form-field.filtro-activo .mat-mdc-select-arrow {
+   /*  color: #0a9403 !important; */
+   color: #0071b2 !important;
+}
+
+
+/* Ajuste de densidad para form-fields compactos */
+.filtro-compacto .mat-mdc-text-field-wrapper {
+    height: 40px !important; /* Ajusta la altura general (por defecto es ~56px) */
+}
+
+/* Reduce el padding superior e inferior del contenedor del select/input */
+.filtro-compacto .mat-mdc-form-field-flex {
+    height: 40px !important;
+    align-items: center !important;
+}
+
+.filtro-compacto .mat-mdc-select-trigger,
+.filtro-compacto .mat-mdc-input-element {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Re-centrar la etiqueta (mat-label) verticalmente */
+.filtro-compacto .mdc-text-field--outlined .mdc-floating-label {
+    top: 20px !important;
+}
+
+.filtro-compacto .mdc-text-field--outlined .mdc-floating-label--float-above {
+    top: 28px !important;
+}
+
+/* Reducir espacio de la flecha del mat-select si es necesario */
+.filtro-compacto .mat-mdc-select-arrow-wrapper {
+    transform: translateY(-2px);
+}
+
+.filtro-compacto .mat-mdc-text-field-wrapper {
+    background-color: #ffffff !important; /* Cambia por el color que quieras */
+    border-radius: 6px !important; /* Opcional: para suavizar los bordes */
+}
+
+/* Color de fondo cuando el filtro esté activo (si usas la clase .filtro-activo) */
+.filtro-compacto.filtro-activo .mat-mdc-text-field-wrapper {
+    /* background-color: #f2f2f2 !important; */ /* Fondo suave al seleccionar opciones */
 }

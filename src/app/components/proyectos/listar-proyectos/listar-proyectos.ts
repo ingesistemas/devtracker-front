@@ -12,19 +12,20 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
-import { faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus } from '@fortawesome/free-regular-svg-icons';
+import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule, NgClass, UpperCasePipe } from '@angular/common';
 import { IProyecto } from '../../../interfaces/iproyecto';
-import { CapitalizarPipe } from '../../../pipes/capitalizar-pipe';
-
+import { CdkOverlayOrigin, OverlayModule } from '@angular/cdk/overlay';
+import { IUsuario } from '../../../interfaces/iusuario';
+import { Popover } from "../../shared/popover/popover";
 
 @Component({
   selector: 'app-listar-proyectos',
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatBottomSheetModule, 
-    MatButtonModule, FontAwesomeModule, MatMenuModule, MatIconModule, NgClass, UpperCasePipe, CommonModule ],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatBottomSheetModule,
+    MatButtonModule, FontAwesomeModule, MatMenuModule, MatIconModule, NgClass, UpperCasePipe, CommonModule, OverlayModule, Popover],
   templateUrl: './listar-proyectos.html',
   styleUrl: './listar-proyectos.css',
 })
@@ -36,10 +37,12 @@ export class ListarProyectos  implements AfterViewInit {
   private toastrServicio = inject(ToastrService)
   private router = inject(Router)
 
+
   faSquarePlus = faSquarePlus;
   faPenToSquare = faPenToSquare;
   faSquareCheck = faSquareCheck;
   faEyeSlash = faEyeSlash;
+  faCircleQuestion = faCircleQuestion;
 
   proyectos: IProyecto[] = []
   
@@ -50,10 +53,6 @@ export class ListarProyectos  implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor() {
-    // Create 100 users
-    //const users = Array.from({length: 100}, (_, k) => this.createNewUser(k + 1));
-
-    // Assign the data to the data source for the table to render
     this.dataSource = new MatTableDataSource(this.proyectos);
   }
 
@@ -99,6 +98,35 @@ export class ListarProyectos  implements AfterViewInit {
     this.dataSource.sort = this.sort;
     
   }
+
+  //******************* POPOVER *************************//
+  isOpen = false;
+  activeTrigger!: CdkOverlayOrigin;
+  selectedUser: IUsuario | null = null;  
+
+  openOverlay(trigger: CdkOverlayOrigin, user: any) {
+    // Si haces clic en el mismo usuario, se cierra
+    if (this.isOpen && this.selectedUser === user) {
+      this.closeOverlay();
+      return;
+    }
+
+    // 1. Asignamos la referencia del botón (origen)
+    this.activeTrigger = trigger;
+    // 2. Asignamos el usuario seleccionado
+    this.selectedUser = user;
+    // 3. Cambiamos el estado a visible
+    this.isOpen = true;
+    
+    // Debugger para confirmar en consola si entra
+    console.log('Overlay abierto para:', user);
+  }
+
+  closeOverlay() {
+    this.isOpen = false;
+    this.selectedUser = null;
+  }
+  //******************* FIN POPOVER *************************//
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

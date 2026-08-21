@@ -6,6 +6,8 @@ import { provideToastr } from 'ngx-toastr';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { JwtInterceptorTs } from './servicios/jwt.interceptor';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { SpanishPaginatorIntlTs } from './servicios/spanish-paginator-intl.ts';
 
 
 // 1. Importar PrimeNG y el tema deseado
@@ -17,6 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([JwtInterceptorTs])),
+    { provide: MatPaginatorIntl, useClass: SpanishPaginatorIntlTs },
     provideAnimationsAsync(), // Requerido para las transiciones de los toasts
     provideToastr({
       timeOut: 1000,

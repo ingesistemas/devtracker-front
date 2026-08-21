@@ -158,7 +158,7 @@ export class CreateUser implements OnInit {
           this.modalCargandoServicio.abrirModal(true)
           this.datosTempServicio.clear()
           this.modalCargandoServicio.abrirModal(false)
-            this.toastrServicio.success('La sesión fue cerrada con éxito.', "Aviso:", { toastClass: 'ngx-toastr toast-ancho' })
+          this.toastrServicio.success('La sesión fue cerrada con éxito.', "Aviso:", { toastClass: 'ngx-toastr toast-ancho' })
           setTimeout(()=>{
             this.router.navigateByUrl("/")
           }, 1000)

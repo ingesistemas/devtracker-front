@@ -465,3 +465,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     background-color: #e5e5e584 !important; 
 }
 
+/* :root {
+  --mat-select-panel-background-color: rgb(243, 243, 243) !important;
+  --mat-select-enabled-trigger-text-color: rgb(5, 105, 187) !important;
+} */

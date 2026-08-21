@@ -1,0 +1,14 @@
+@if(user){
+    <div class="user-popover-card" >
+        <div class="popover-arrow"></div>
+        <div class="popover-header">
+        <strong>{{ user.nombre }}</strong>
+        <span class="badge">{{ user.rol?.rol }}</span>
+        </div>
+        <div class="popover-body">
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Celular:</strong> </p>
+        </div>
+    </div>
+}
+

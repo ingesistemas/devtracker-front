@@ -10,6 +10,8 @@ import { CambiarContrasena } from './components/users/cambiar-contrasena/cambiar
 import { DatosPersonales } from './components/users/datos-personales/datos-personales';
 import { ListarProyectos } from './components/proyectos/listar-proyectos/listar-proyectos';
 import { CrearProyectos } from './components/proyectos/crear-proyectos/crear-proyectos';
+import { ListEpics } from './components/epics/list-epics/list-epics';
+import { CrearEpica } from './components/epics/crear-epica/crear-epica';
 
 export const routes: Routes = [
     {
@@ -54,5 +56,16 @@ export const routes: Routes = [
         path:'crear-proyecto',
         component: CrearProyectos,
         canActivate: [authGuard]
-    }
+    },
+    {
+        path:'epicas',
+        component: ListEpics,
+        canActivate: [authGuard]
+    },
+    {
+        path:'crear-epica',
+        component: CrearEpica,
+        canActivate: [authGuard]
+    },
+    
 ];

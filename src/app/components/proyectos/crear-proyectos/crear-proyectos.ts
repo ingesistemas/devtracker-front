@@ -63,6 +63,7 @@ export class CrearProyectos {
         proyecto: this.proyecto.proyecto,
       });
       this.tituloFormulario = "Editar proyecto"
+      this.url = '/proyectos/editar'
     }
     this.modalCargandoServicio.abrirModal(false)
   }
