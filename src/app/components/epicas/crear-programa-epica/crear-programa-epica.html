@@ -1,0 +1,85 @@
+<div class="titulo-tabla">
+  <h3>{{ titulo }}</h3>
+     <div class="contieneBotones d-flex ms-auto justify-content-end gap-2">
+        @if(!mostrarFormularioTareas){
+            <button 
+                type="button" 
+                class="btn btn-sm btn-aceptar btn-amplio2 d-flex align-items-center" 
+                (click)="nuevaTarea()">
+                <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+                <span>Agregar tarea</span>
+            </button>
+        }
+         @if(!mostrarHistoriaEpica){
+            <button 
+                type="button" 
+                class="btn btn-sm btn-aceptar btn-amplio2 d-flex align-items-center" 
+                (click)="mostrarHistoriaEpica = !mostrarHistoriaEpica">
+                <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+                <span>Mostrar historia</span>
+            </button>
+         }@else {
+            <button 
+                type="button" 
+                class="btn btn-sm btn-aceptar btn-amplio2 d-flex align-items-center" 
+                (click)="mostrarHistoriaEpica = !mostrarHistoriaEpica">
+                <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+                <span>Ocultar historia</span>
+            </button>
+         }
+        <button 
+            type="button" 
+            class="btn btn-sm  btn-aceptar btn-amplio d-flex align-items-center" 
+            routerLink="/programar">
+            <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+            <span>Volver a listar épicas</span>
+        </button>
+    </div> 
+</div>
+
+<div class="card-form" style="width: 75%;">
+    <div class="row">
+        <div class="col-md-12">
+            @if(mostrarHistoriaEpica){
+                <form [formGroup]="formulario" autocomplete="off">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label">Descripción detallada del desarrollo [Resumen de la implementación]</label>
+                                <ckeditor 
+                                [editor]="Editor" 
+                                [config]="editorConfig" 
+                                formControlName="historia">
+                                </ckeditor>
+                                <mat-error>{{ validar('historia', 'formulario') }}</mat-error>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-start gap-2 flex-wrap">
+                        <button 
+                            type="button" 
+                            class="btn btn-sm btn-aceptar d-flex align-items-center" 
+                            (click)="aceptarHistoria()">
+                            <fa-icon [icon]="faCheck" class="me-2"></fa-icon>
+                            <span>Aceptar</span>
+                        </button>
+                    </div>
+                </div>
+            }
+       
+            <!-- <label class="form-label">Detalle de la tarea seleccionada</label>
+            <textarea 
+                class="form-control form-control-sm mInput"
+                formControlName="detalle"
+                rows="20">
+            </textarea> -->
+        </div>
+        
+        <div class="col-md-12">
+            <app-listar-tareas></app-listar-tareas>
+        </div>
+        
+    </div>
+</div>

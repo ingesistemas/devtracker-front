@@ -1,0 +1,12 @@
+.titulo-tabla{
+    width: 80%;
+}
+
+button{
+    width: 175px;
+}
+
+::ng-deep .ck-editor__editable_inline {
+  min-height: 250px !important;
+}
+

@@ -1,0 +1,16 @@
+.titulo-tabla, .contiene-filtros{
+    margin-top: 2px !important;
+    width: 95%;
+}
+
+button{
+    width: 150px;
+}
+
+li{
+    text-decoration: none;
+    font-style: normal;
+    list-style: none;
+    margin-top: -20px;
+}
+

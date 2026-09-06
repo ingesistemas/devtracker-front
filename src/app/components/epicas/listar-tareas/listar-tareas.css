@@ -1,0 +1,25 @@
+.titulo-tabla, .contiene-filtros{
+    margin-top: 20px !important;
+    width: 100%;
+}
+
+button{
+    width: 150px;
+}
+
+.mat-column-descripcion {
+  width: 400px !important;
+  min-width: 400px !important;
+  max-width: 400px !important;
+}
+
+.toggle-compacto {
+  /* Reduce el tamaño al 80% (ajusta el valor entre 0.7 y 0.85 según tu preferencia) */
+  transform: scale(.7) !important;
+  
+  /* Mantiene la alineación centrada o ajustada dentro de la celda */
+  transform-origin: left center !important;
+  backface-visibility: hidden !important;
+  -webkit-font-smoothing: subpixel-antialiased !important;
+  will-change: transform !important;
+}

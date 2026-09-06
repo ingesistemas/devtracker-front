@@ -20,7 +20,7 @@ import { CommonModule, NgClass, UpperCasePipe } from '@angular/common';
 import { IProyecto } from '../../../interfaces/iproyecto';
 import { CdkOverlayOrigin, OverlayModule } from '@angular/cdk/overlay';
 import { IUsuario } from '../../../interfaces/iusuario';
-import { Popover } from "../../shared/popover/popover";
+import { Popover } from "../../compartidos/popover/popover";
 
 @Component({
   selector: 'app-listar-proyectos',

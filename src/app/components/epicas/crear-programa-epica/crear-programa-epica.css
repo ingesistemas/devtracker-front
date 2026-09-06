@@ -1,0 +1,36 @@
+.titulo-tabla{
+    width: 75%;
+}
+
+button{
+    width: 100px;
+}
+
+.btn-amplio{
+    width: 175px;
+}
+
+.btn-amplio2{
+    width: 145px; 
+}
+
+::ng-deep .ck-editor__editable_inline {
+  min-height: 87px !important;
+}
+
+.titucontieneBotones{
+    margin: 25px auto !important;
+    background-color: #8fc4e55d;
+     background-color: #dde9fb;
+    padding-left: 15px;
+    margin-bottom: -25px !important;
+    height: 50px;
+    color: #176a99;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+}
+
+
+

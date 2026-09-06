@@ -1,0 +1,71 @@
+@if(data){
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="titulo-tabla"><h3>Crear tarea</h3> </div>
+                <div class="modal-body row" style="white-space: pre-line;" >
+                    <form [formGroup]="formularioTareas" autocomplete="off">                    
+                        <div class="row">
+                            <div class="mb-3 col-md-12">
+                                <label class="form-label">Nombre de la tarea</label>
+                                <input type="text" class="form-control form-control-sm mInput" formControlName="detalle" >
+                                <mat-error>{{ validar('detalle','formularioTareas') }}</mat-error>
+                            </div>
+
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label">Fecha posible entrega</label>
+                                <input type="date" class="form-control form-control-sm mInput" formControlName="f_pentrega" >
+                                <mat-error>{{ validar('f_pentrega','formularioTareas') }}</mat-error>
+                            </div>
+
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label">Complejidad</label>
+                                <mat-select class="mSelect" formControlName="id_complejidad">
+                                @for (item of listaComplejidades; track item.id) {
+                                    <mat-option 
+                                    [value]="item.id" 
+                                    class="mInput-option" >
+                                    {{ item.nombre }}
+                                    </mat-option>
+                                }
+                                </mat-select>
+                                <mat-error>{{ validar('id_complejidad', 'formularioTareas') }}</mat-error>
+                            </div>
+
+                            <div class="mb-3 col-md-4">
+                                <label class="form-label">Prioridad</label>
+                                <mat-select class="mSelect" formControlName="id_prioridad">
+                                @for (item of listaPrioridades; track item.id) {
+                                    <mat-option 
+                                    [value]="item.id" 
+                                    class="mInput-option" >
+                                    {{ item.nombre }}
+                                    </mat-option>
+                                }
+                                </mat-select>
+                                <mat-error>{{ validar('id_prioridad', 'formularioTareas') }}</mat-error>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button 
+                        type="button" 
+                        class="btn btn-sm btn-aceptar d-flex align-items-center" 
+                        (click)="aceptar()">
+                        <fa-icon [icon]="faCheck" class="me-2"></fa-icon>
+                        <span>Aceptar</span>
+                    </button>
+                     <button type="button" class="btn btn-sm btn-cancelar" (click)="cerrar()"><fa-icon
+                    [icon]="faRotateLeft"></fa-icon> Cerrar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- fondo oscuro -->
+    <div class="modal-backdrop fade show" ></div>
+}

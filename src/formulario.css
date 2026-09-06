@@ -34,7 +34,7 @@
 
 label {
     color: #026daa !important;
-    font-size: .8rem;
+    font-size: 1rem;
     margin-bottom: -5px !important;
 }
 
@@ -91,18 +91,20 @@ mat-error {
 }
 
 .mInput {
-    font-size: .8.2em !important;
+    font-size: .9em !important;
+    color: #373b3e;
 }
 
 .mInput:focus {
     background-color: #cfe6ff !important;
-    color: #00316c !important;
+    color: #0303a7 !important;
     box-shadow: none !important;
 }
 
 p{
     text-align: justify;
-    color: #595959;
+    color: #6c6e70;
+
 }
 
 select,
@@ -113,12 +115,12 @@ select option {
 select.form-select {
     height: 32px;
     padding: 4px 32px 4px 10px;
-    font-size: 13px;
     border: 1px solid #ced4da;
     border-radius: 4px;
     background-color: #bbcae8;
-    color: #495057;
     cursor: pointer;
+    font-size: .9em !important;
+    color: #0507b1 !important;
 }
 
 select.form-select:focus {
@@ -128,20 +130,21 @@ select.form-select:focus {
 }
 
 select.form-select option {
-    font-size: 13px;
+    font-size: .9em !important;
+    color: #0507b1 !important;
     padding: 8px;
 }
 
 .mSelect {
     width: 100%;
     height: 30px;
-    font-size: .8em !important;
     cursor: pointer;
     border: 1px solid #CCC;
     padding-left: 5px !important;
     border-radius: 4px;
-    color: rgb(77, 77, 77) !important;
     padding-right: 10px;
+    font-size: .9em !important;
+    color: #373b3e !important;
 }
 
 .mSelect:focus {
@@ -151,7 +154,7 @@ select.form-select option {
 }
 
 .mInput-option {
-    font-size: .8em !important;
+    font-size: .9em !important;
     cursor: pointer;
     min-height: 32px !important;
     color: #00506c;
@@ -164,4 +167,53 @@ select.form-select option {
 
 .mayuscula {
     text-transform: uppercase;
+}
+
+
+.btn-ver-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;          /* Equivalente a gap-1 (4px) */
+  text-decoration: none; /* Cancela el subrayado */
+  color: #0d6efd;        /* Color azul primario (text-primary) */
+  font-size: 0.9em;      /* Mantiene el tamaño personalizado */
+  padding: 5px;
+  border-radius: 10px;
+}
+
+/* Opcional: Para asegurar que el icono quede nivelado ópticamente */
+.btn-ver-pdf fa-icon,
+.btn-ver-pdf mat-icon {
+  display: inline-flex;
+  transform: translateY(-1px);
+}
+
+.icono-ver-pdf{
+    color: #0d6efd;        /* Color azul primario (text-primary) */
+    font-size: 1.5em;  
+}
+
+.icono-ver-pdf:hover, .btn-ver-pdf:hover{
+    background-color: #ededed;
+    color: #003496 !important;
+}
+
+/* Sobreescritura directa de variables de Angular Material */
+
+
+/* Fuerza el estilo del texto de la pestaña activa */
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: rgb(0, 104, 208) !important;
+  padding: 15px;
+  font-weight: bold !important;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  font-size: 18px;
+ /*  background-color: #1486d1 !important;
+  color: #FFF !important; */
+}
+
+.mat-mdc-tab:not(.mdc-tab--active) .mdc-tab__text-label {
+    color: #035a94 !important; /* Cambia al color que necesites */
+    font-weight: bold !important;
+    font-size: 18px;
 }

@@ -24,4 +24,7 @@ export interface IEpica {
   activo: boolean;
   id_prioridad: number;
   nom_prioridad: string;
+  ruta_pdf?: string | null;   // Valor tal cual viene de la columna en BD (ej: "epicas_pdfs/abc123.pdf")
+  url_pdf?: string | null;
+  archivo_video: string | null;
 }

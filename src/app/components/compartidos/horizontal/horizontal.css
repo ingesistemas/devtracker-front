@@ -1,0 +1,45 @@
+.bg-light{
+    background-color: rgb(0, 148, 216) !important;
+    
+}
+
+.nav-link{
+    color: #FFF !important;
+    border-radius: 5px;
+}
+
+.nav-link:hover{
+    background-color: #FFF !important;
+    color: #004e81 !important;
+    cursor: pointer;
+}
+
+.dropdown-item{
+    color: rgb(83, 83, 83) ;
+}
+
+.dropdown-item:hover{
+    background-color: #f0f0f0 !important;
+    cursor: pointer;
+}
+
+.navbar-nav{
+    margin-right: 80px;
+}
+
+.top-navbar{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.tareaActiva{
+   /*  background-color: #004e81; */
+    background-color: #00bf96;
+    color: #FFF;
+}
+
+.sinTareaActiva{
+    background-color: rgb(255, 138, 36);
+    color: #ffffff !important;
+}

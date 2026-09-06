@@ -70,10 +70,14 @@ export class CrearProyectos {
 
   validar(campo: string) {
     const control = this.formulario.get(campo);
-    if (control && (control.touched || control.dirty) && control.invalid) {
+    if (!control || !control.invalid || !(control.touched || control.dirty)) {
+      return null;
+    }
+    return this.obtenerErrorServicio.getErrores(this.formulario, campo);
+    /* if (control && (control.touched || control.dirty) && control.invalid) {
       return this.obtenerErrorServicio.getErrores(this.formulario, campo);
     }
-    return null;
+    return null; */
   }
 
   aceptar() {

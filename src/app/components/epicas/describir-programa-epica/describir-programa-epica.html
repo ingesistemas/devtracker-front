@@ -1,0 +1,131 @@
+<div class="titulo-tabla">
+  <h3>{{ titulo }}</h3>
+  <button 
+    type="button" 
+    class="btn btn-sm btn-aceptar d-flex align-items-center" 
+    routerLink="/programar">
+    <fa-icon [icon]="faFileCirclePlus"> class="me-2"></fa-icon>
+    <span>Volver a listar épicas</span>
+  </button>
+</div>
+
+<div class="card-form" style="width: 80%;">
+  <form [formGroup]="formulario" autocomplete="off">
+    <div class="row">
+
+      <!-- Nombre -->
+      <div class="mb-3 col-md-6">
+        <label class="form-label">Nombre de la épica</label>
+        <input type="text" class="form-control form-control-sm mInput" formControlName="nombre">
+        <!-- <mat-error>{{ validar('nombre') }}</mat-error> -->
+      </div>
+
+      <!-- Proyecto -->
+       <div class="mb-3 col-md-6">
+        <label class="form-label">Nombre del proyecto</label>
+        <input type="text" class="form-control form-control-sm mInput" formControlName="id_proyecto">
+        <!-- <mat-error>{{ validar('nombre') }}</mat-error> -->
+      </div>
+      <!-- <div class="mb-3 col-md-6">
+        <label class="form-label">Proyecto</label>
+        <mat-select class="mSelect" formControlName="id_proyecto">
+          @for (item of proyectos; track item.id) {
+            <mat-option 
+              [value]="item.id" 
+              class="mInput-option" 
+              [disabled]="+item.activo === 1"
+              [ngClass]="{ 'opcion-inactiva': +item.activo === 1 }">
+              {{ item.proyecto }}
+            </mat-option>
+          }
+        </mat-select>
+      </div> -->
+
+      <!-- Detalle  (CKEditor con imágenes) -->
+      <div class="mb-3 col-md-12">
+        <label class="form-label">Ingrese el detalle de la épica.</label>
+        <ckeditor 
+          [editor]="Editor" 
+          [config]="editorConfig" 
+          formControlName="detalle">
+        </ckeditor>
+       <!--  <mat-error>{{ validar('detalle') }}</mat-error> -->
+      </div>
+
+      <div class="mb-3 col-md-6">
+        <label class="form-label">Adjuntar documento PDF</label>
+        <input 
+          type="file" 
+          class="form-control form-control-sm mInput" 
+          accept="application/pdf"
+          formControlName="archivo_pdf">
+        
+        @if (archivoPdfNombre) {
+          <small class="text-muted mt-1 d-block">
+            <span class = "text-primary">Archivo seleccionado:</span> {{ archivoPdfNombre }}
+          </small>
+        }
+        @if (epicas?.url_pdf) {
+          <a [href]="epicas.url_pdf" target="_blank" 
+          class="btn-ver-pdf">
+            <mat-icon class="icono-ver-pdf">picture_as_pdf</mat-icon> Ver PDF Adjunto
+          </a>
+        }
+        <!-- <mat-error>{{ validar('archivo_pdf') }}</mat-error> -->
+      </div>
+
+      <div class="mb-3 col-md-6">
+        <label class="form-label">Adjuntar video</label>
+        <input 
+          type="file" 
+          class="form-control form-control-sm mInput" 
+          accept="video/*"
+          formControlName="archivo_video">
+        
+        @if (archivoVideoNombre) {
+          <small class="text-muted mt-1 d-block">
+            <span class="text-primary">Archivo seleccionado:</span> {{ archivoVideoNombre }}
+          </small>
+        }
+        @if (epicas?.url_video) {
+          <a [href]="epicas.url_video" target="_blank" class="btn-ver-pdf">
+            <mat-icon class="icono-ver-pdf">videocam</mat-icon> Ver Video Adjunto
+          </a>
+        }
+       <!--  <mat-error>{{ validar('archivo_video') }}</mat-error> -->
+      </div>
+
+      <!-- Prioridad -->
+      <div class="mb-3 col-md-6">
+        <label class="form-label">Prioridad</label>
+        <mat-select class="mSelect" formControlName="id_prioridad">
+          @for (item of listaPrioridades; track item.id) {
+            <mat-option [value]="item.id" class="mInput-option">
+              {{ item.nombre }}
+            </mat-option>
+          }
+        </mat-select>
+       <!--  <mat-error>{{ validar('id_prioridad') }}</mat-error> -->
+      </div>
+
+      <!-- Asignado a -->
+       <div class="mb-3 col-md-6">
+        <label class="form-label">Asignado a:</label>
+        <input type="text" class="form-control form-control-sm mInput" formControlName="id_usu_asig">
+        <!-- <mat-error>{{ validar('nombre') }}</mat-error> -->
+      </div>
+    </div>
+  </form>
+
+  <div class="card-footer">
+    <div class="d-flex justify-content-start gap-2 flex-wrap">
+      <button 
+        type="button" 
+        class="btn btn-sm btn-cancelar d-flex align-items-center" 
+        routerLink="/programar">
+        <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+        <span>Cancelar</span>
+      </button>
+    </div>
+  </div>
+</div>

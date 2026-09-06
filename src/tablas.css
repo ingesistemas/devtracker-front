@@ -18,13 +18,15 @@
 .titulo-tabla{
     margin: 25px auto !important;
     background-color: #8fc4e55d;
-    padding-left: 25px;
+     background-color: #dde9fb;
+    padding-left: 15px;
     margin-bottom: -25px !important;
     height: 50px;
     color: #176a99;
     display: flex;
     align-items: center;
     width: 100%;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
 }
 
 .contiene-filtros{
@@ -37,52 +39,17 @@
     display: flex;
     align-items: center;
     width: 100%;
+    border: 1px solid #dfdede;
 
 }
 
-.menu-filtro {
-    position: relative !important;
-    overflow: visible !important;
-    background: #f2f2f2 !important; 
+.tabla .mat-mdc-cell {
+  font-size: 13px; /* O el tamaño que prefieras (ej: 0.85rem) */
 }
-/* 
-.menu-filtro::before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    left: 25px;
-    width: 10px;
-    height: 10px;
-    background: #f2f2f2;
-    transform: rotate(45deg);
-    z-index: 1;
-}
-
-.btn-texto-filtro{
-  background-color: #f7f7f7 !important;
-  color: rgb(0, 105, 143) !important;
-}
-
-.opcion-inactiva{
-  color: red !important;
-}
-
-.btn-texto-filtro:hover{
-  background-color: #dfdfdf !important;
-}
-
-.filtro-activo{
-  color: rgb(0, 164, 25) !important;
-  background-color: #f6f6f6 !important;
-  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-}
-.filtro-compacto{
-  width: auto !important;
-} */
 
 .tabla{
     width: 100%;
-    min-width: 600px;
+    table-layout: auto;
 }
 
 .mat-mdc-header-cell,
@@ -126,7 +93,12 @@
 .opcion-menu {
     color: #484848 !important;
     padding-bottom: 0px !important;
-   
+}
+
+.menu-filtro {
+    position: relative !important;
+    overflow: visible !important;
+    background: #f2f2f2 !important; 
 }
 
 .opcion-menu:hover {
@@ -188,14 +160,19 @@ table, td, th, tr{
 }
 
 .texto-ajustado {
-    width: 400px;
-    max-width: 400px;
-    min-width: 400px;
-    white-space: normal;
-    text-align: justify;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-align: justify !important;
 }
 
-
+/* Regla específica para la columna 'detalle' */
+.mat-column-detalle {
+  width: 400px;
+  max-width: 400px;
+  min-width: 300px;
+}
 
 /*********** PRIORIDADES ***********/
 /* Contenedor principal flex */
@@ -245,10 +222,10 @@ table, td, th, tr{
 }
 
 /* Colores de las prioridades (coincidentes con tu tabla) */
-.bg-prioridad-1 { background-color: #ffd8dc; } /* Crítica */
-.bg-prioridad-2 { background-color: #ffecce; } /* Alta */
-.bg-prioridad-3 { background-color: #c8e6c9; } /* Media */
-.bg-prioridad-4 { background-color: #f0f0f0; } /* Baja */
+.bg-prioridad-4 { background-color: #ffd8dc; } /* Crítica */
+.bg-prioridad-3 { background-color: #ffecce; } /* Alta */
+.bg-prioridad-2 { background-color: #c8e6c9; } /* Media */
+.bg-prioridad-1 { background-color: #f0f0f0; } /* Baja */
 
 
 :root {
@@ -279,13 +256,14 @@ mat-form-field.filtro-activo .mat-mdc-select-arrow {
 
 /* Ajuste de densidad para form-fields compactos */
 .filtro-compacto .mat-mdc-text-field-wrapper {
-    height: 40px !important; /* Ajusta la altura general (por defecto es ~56px) */
+    height: 35px !important; /* Ajusta la altura general (por defecto es ~56px) */
 }
 
 /* Reduce el padding superior e inferior del contenedor del select/input */
 .filtro-compacto .mat-mdc-form-field-flex {
     height: 40px !important;
     align-items: center !important;
+    font-size: 18px;
 }
 
 .filtro-compacto .mat-mdc-select-trigger,
@@ -296,11 +274,17 @@ mat-form-field.filtro-activo .mat-mdc-select-arrow {
 
 /* Re-centrar la etiqueta (mat-label) verticalmente */
 .filtro-compacto .mdc-text-field--outlined .mdc-floating-label {
-    top: 20px !important;
+    top: 12px !important;
 }
 
 .filtro-compacto .mdc-text-field--outlined .mdc-floating-label--float-above {
-    top: 28px !important;
+    top: 18px !important;
+    background-color: #f4f4f4 !important;
+    color: #05038b !important;
+    padding: 1px 10px !important;
+    border-radius: 5px !important;
+    width: auto !important;
+    border: 1px solid rgb(0, 48, 126);
 }
 
 /* Reducir espacio de la flecha del mat-select si es necesario */

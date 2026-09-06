@@ -1,26 +1,30 @@
 import { Routes } from '@angular/router';
 import { App } from './app';
-import { Income } from './components/income/income';
-import { Home } from './components/home/home';
 import { authGuard } from './guards/auth-guard';
-import { Contenedor } from './components/shared/contenedor/contenedor';
-import { ListUsers } from './components/users/list-users/list-users';
-import { CreateUser } from './components/users/create-user/create-user';
-import { CambiarContrasena } from './components/users/cambiar-contrasena/cambiar-contrasena';
-import { DatosPersonales } from './components/users/datos-personales/datos-personales';
+import { Contenedor } from './components/compartidos/contenedor/contenedor';
+import { CambiarContrasena } from './components/usuarios/cambiar-contrasena/cambiar-contrasena';
+import { DatosPersonales } from './components/usuarios/datos-personales/datos-personales';
 import { ListarProyectos } from './components/proyectos/listar-proyectos/listar-proyectos';
 import { CrearProyectos } from './components/proyectos/crear-proyectos/crear-proyectos';
-import { ListEpics } from './components/epics/list-epics/list-epics';
-import { CrearEpica } from './components/epics/crear-epica/crear-epica';
+import { CrearEpica } from './components/epicas/crear-epica/crear-epica';
+import { CrearGrupoTrabajo } from './components/grupos-trabajo/crear-grupo-trabajo/crear-grupo-trabajo';
+import { ListarGruposTrabajo } from './components/grupos-trabajo/listar-grupos-trabajo/listar-grupos-trabajo';
+import { ProgramarEpica } from './components/epicas/programar-epica/programar-epica';
+import { ContieneCrearProgramaEpica } from './components/epicas/contiene-crear-programa-epica/contiene-crear-programa-epica';
+import { Ingreso } from './components/ingreso/ingreso';
+import { ListarUsuarios } from './components/usuarios/listar-usuarios/listar-usuarios';
+import { CrearUsuario } from './components/usuarios/crear-usuario/crear-usuario';
+import { ListarEpicas } from './components/epicas/listar-epicas/listar-epicas';
+import { Inicio } from './components/inicio/inicio';
 
 export const routes: Routes = [
     {
         path: '',
-        component: Home
+        component: Inicio
     },
     {
         path: 'ingresar',
-        component: Income
+        component: Ingreso
     },
     {
         path: 'contenedor',
@@ -29,12 +33,12 @@ export const routes: Routes = [
     },
     {
         path: 'usuarios',
-        component: ListUsers,
+        component: ListarUsuarios,
         canActivate: [authGuard]
     },
     {
         path:'crear-usuario',
-        component: CreateUser,
+        component: CrearUsuario,
         canActivate: [authGuard]
     },
     {
@@ -58,13 +62,33 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     {
+        path:'grupos',
+        component: ListarGruposTrabajo,
+        canActivate: [authGuard]
+    },
+    {
+        path:'crear-grupo',
+        component: CrearGrupoTrabajo,
+        canActivate: [authGuard]
+    },
+    {
         path:'epicas',
-        component: ListEpics,
+        component: ListarEpicas,
         canActivate: [authGuard]
     },
     {
         path:'crear-epica',
         component: CrearEpica,
+        canActivate: [authGuard]
+    },
+    {
+        path:'programar',
+        component: ProgramarEpica,
+        canActivate: [authGuard]
+    },
+    {
+        path:'crear-programa-epica',
+        component: ContieneCrearProgramaEpica,
         canActivate: [authGuard]
     },
     

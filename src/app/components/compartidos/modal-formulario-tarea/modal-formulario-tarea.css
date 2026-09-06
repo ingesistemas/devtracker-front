@@ -1,0 +1,35 @@
+.modal-content{
+  margin-top: 100px !important;
+}
+
+.exitoso{
+  color: rgb(9, 200, 168);
+}
+
+.error{
+  color: red;
+}
+
+.advertencia{
+  color: orange;
+}
+.card-title{
+  background-color: #FFF !important;
+  font-size: 24px;
+}
+.mensaje{
+  color: rgb(79, 79, 79);
+  font-weight: 400 !important;
+  font-size: .9em;
+}
+
+.modal-content{
+  width: 800px !important;
+  margin-left: -150px;
+}
+
+.titulo-tabla{
+  margin-top: 0px !important;
+  margin-bottom: 1px !important;
+  z-index: 1000;
+}
