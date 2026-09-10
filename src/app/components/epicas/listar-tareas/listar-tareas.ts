@@ -29,26 +29,30 @@ import { DatosTareasServicio } from '../../../servicios/datos-tareas-servicio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TareaCronometroServicio } from '../../../servicios/tarea-cronometro-servicio';
 import { $locationShim } from '@angular/common/upgrade';
+import { CronometroServicio } from '../../../servicios/cronometro-servicio';
+import { ThisReceiver } from '@angular/compiler';
+import { Pipe } from '@angular/core';
+import { TiempoFormatoPipe } from "../../../pipes/tiempo-formato-pipe";
 
 
 @Component({
   selector: 'app-listar-tareas',
-  imports: [MatFormFieldModule, 
-    MatInputModule, 
-    MatSelectModule, 
-    FormsModule, 
-    MatTableModule, 
-    MatSortModule, 
-    MatPaginatorModule, 
-    MatBottomSheetModule, 
-    MatButtonModule, 
-    FontAwesomeModule, 
-    MatMenuModule, 
-    MatIconModule, 
-    CommonModule, 
+  imports: [MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    FormsModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatBottomSheetModule,
+    MatButtonModule,
+    FontAwesomeModule,
+    MatMenuModule,
+    MatIconModule,
+    CommonModule,
     OverlayModule,
     MatSlideToggleModule,
-    Popover],
+    Popover, TiempoFormatoPipe],
   templateUrl: './listar-tareas.html',
   styleUrl: './listar-tareas.css',
 })
@@ -62,11 +66,14 @@ export class ListarTareas {
   private datosFormServicio = inject(DatosFormServicio)
   private datosTempTareas = inject(DatosTareasServicio)
   private tareaCronometroServicio = inject(TareaCronometroServicio)
+  private cronometroServicio = inject(CronometroServicio)
+  
   id_usuario = this.datosTempServicio.id()
   minutosAcumulados: number = 0;  // Desde la BD
   fechaHoraInicio: Date | null = null;  // Desde la BD
   horas: number = 0;
   minutos: number = 0;
+  //estadoActivoServicio = this.cronometroServicio.estadoActivo()
 
   faSquarePlus = faSquarePlus;
   faPenToSquare = faPenToSquare;
@@ -98,7 +105,7 @@ export class ListarTareas {
   private intervalo: any;
 
   displayedColumns: string[] = [
-    'accion', 'Opciones', 'detalle', 'estado', 'complejidad', 'prioridad',  'asignado'
+    'accion', 'Opciones', 'detalle', 'f_pentrega', 'estado', 'complejidad', 'prioridad',  'asignado'
   ];
   
   dataSource: MatTableDataSource<ITarea> = new MatTableDataSource<ITarea>([]);
@@ -131,7 +138,7 @@ export class ListarTareas {
   }
 
   ngOnInit(): void {
-    this.intervalo = setInterval(() => this.actualizarTiempo(), 60000);
+   
     // Configuraciones de ordenamiento y filtrado de MatTable
     this.dataSource.sortingDataAccessor = (item: any, property: string) => {
       switch (property) {
@@ -165,6 +172,7 @@ export class ListarTareas {
     if (!this.datosTempTareas.tieneDatos()) {
       this.consultarTareas();
     }
+    //this.actualizarTiempo()
   }
 
   ngAfterViewInit() {
@@ -240,7 +248,6 @@ export class ListarTareas {
     this.peticionServicio.peticion(`/tareas/consultar/${id}/${id_epica}`, null, 'GET')
     .subscribe({
       next: (resp) => {
-        console.log(resp)
         if (resp.error) {
           this.modalMensajeServicio.abrirModal({
             "tipo": "error",
@@ -256,10 +263,11 @@ export class ListarTareas {
 
           // 1. Buscamos directamente el objeto tarea que tenga cronometro en 1
           const id_usuario = this.datosTempServicio.id()
-          const tareaActiva = this.tareas.find((tarea: any) => 
+          /* const tareaActiva = this.tareas.find((tarea: any) => 
             tarea.cronometro == 1 && tarea.usuario_asignado?.id === id_usuario
-          );
-
+          ); */
+          let fechaActiva = null;
+          let tiempo = 0;
           this.tareas.forEach(tarea => {
             if(tarea.cronometro == 1 && tarea.id_reasig == id_usuario){
               this.minutosAcumulados = tarea.tiempo; 
@@ -267,7 +275,10 @@ export class ListarTareas {
             }
           });
           
+          this.cronometroServicio.setActivo(fechaActiva, tiempo)
           this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
+          console.log(fechaActiva)
+          console.log(tiempo)
         }
       },
       complete: () => {
@@ -462,6 +473,11 @@ export class ListarTareas {
   }
 
   cambiarEstadoTarea(row: any, checked: boolean): void {
+
+    const tareaActiva = this.tareas.find((tarea: any) => 
+      tarea.cronometro == 1 && tarea.usuario_asignado?.id === this.id_usuario
+    );
+
     row.cronometro = (checked ? 1 : 0)
     this.modalCargandoServicio.abrirModal(true);
     this.peticionServicio.peticion('/tareas/cronometro', row, 'POST')
@@ -475,20 +491,37 @@ export class ListarTareas {
           });
           row.cronometro = (checked ? 0 : 1)
         } else {
+          let horas = this.cronometroServicio.horaActual()
+          let minutos = this.cronometroServicio.minutoActual()
+          let acumulado = ( horas + minutos)
+
+          let id_tarea = this.datosTempServicio.id_tarea()
+         
           this.tareas.forEach(tarea => {
             if(row.id != tarea.id){
               tarea.cronometro = 0;
             }
+            if(id_tarea == tarea.id){
+              tarea.tiempo = acumulado
+            }
           });
-          //this.dataSource.data = [...this.tareas];
-          //this.dataSource.data = [...this.dataSource.data];
+         
+          this.datosTempServicio.setTareaActiva(row.id, row.fec_ini, row.tiempo)
+
           let actividad = (row.epica.nombre).toUpperCase() + '-' + row.detalle
           if(row.cronometro == 1){
             this.tareaCronometroServicio.setTarea(actividad)
+            this.fechaHoraInicio = row.fec_ini
+            this.minutosAcumulados = row.tiempo
           }else{
             this.tareaCronometroServicio.setTarea('')
           }
+          
+          this.cronometroServicio.setActivo(this.fechaHoraInicio, this.minutosAcumulados ?? 0)
+          this.cronometroServicio.setCronometro();
           this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
+          let usuario = this.datosTempServicio.user()
+          console.log(usuario)
         }
       },
       complete: () => {
@@ -498,18 +531,34 @@ export class ListarTareas {
   }
 
   actualizarTiempo() {
-    let tareaActiva = this.tareaCronometroServicio.tarea()
-    if (tareaActiva == 'No tienes ninguna tarea activa') return;
+    let tareaActiva = this.tareaCronometroServicio.tarea();
+    if (tareaActiva === 'No tienes ninguna tarea activa') return;
+
+
+    /* if (!this.fechaHoraInicio) {
+      const totalMinutos = this.minutosAcumulados;
+      this.horas = Math.floor(totalMinutos / 60);
+      this.minutos = totalMinutos % 60;
+    } else {
+      const fechaNormalizada = typeof this.fechaHoraInicio === 'string'
+        ? (this.fechaHoraInicio as string).replace(' ', 'T')
+        : this.fechaHoraInicio;
+
+      const fechaInicio = new Date(fechaNormalizada);
+      if (isNaN(fechaInicio.getTime())) return;
 
       const ahora = new Date();
-      const transcurridoMs = ahora.getTime() - this.fechaHoraInicio!.getTime();
-      const transcurridoMin = Math.floor(transcurridoMs / 60000); // miliseg → minutos
+      const transcurridoMs = ahora.getTime() - fechaInicio.getTime();
+      const transcurridoMin = Math.floor(transcurridoMs / 60000);
 
       const totalMinutos = this.minutosAcumulados + transcurridoMin;
       this.horas = Math.floor(totalMinutos / 60);
       this.minutos = totalMinutos % 60;
-      this.tareaCronometroServicio.setTiempo(this.horas, this.minutos)
-    }
+    } */
+
+    // 5. Actualizar el servicio
+    //this.cronometroServicio.setCronometro();
+  }
 
   ngOnDestroy() {
     if (this.intervalo) clearInterval(this.intervalo);

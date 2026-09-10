@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Admin } from "../vertical/admin/admin";
 import { TareaCronometroServicio } from '../../../servicios/tarea-cronometro-servicio';
 import { NgClass } from '@angular/common';
+import { CronometroServicio } from '../../../servicios/cronometro-servicio';
 
 @Component({
   selector: 'app-horizontal',
@@ -22,6 +23,7 @@ export class Horizontal  {
   private router = inject(Router)
   private toastrServicio = inject(ToastrService);
   private tareaCronometroServicio = inject(TareaCronometroServicio)
+  private cronometroServicio = inject(CronometroServicio)
   
   faCheckCircle = faCheckCircle;
   faCodeBranch = faCodeBranch;
@@ -29,8 +31,8 @@ export class Horizontal  {
   emailUsuario = this.datosTempServicio.email
   idRolUsuario = this.datosTempServicio.id_rol
   tareaActual = this.tareaCronometroServicio.tarea
-  horas = this.tareaCronometroServicio.horas
-  minutos = this.tareaCronometroServicio.minutos
+  horas = this.cronometroServicio.horaActual
+  minutos = this.cronometroServicio.minutoActual
   
   clear(){
     this.modalCargandoServicio.abrirModal(true)

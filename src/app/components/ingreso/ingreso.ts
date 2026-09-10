@@ -14,6 +14,7 @@ import { ModalCargandoServicio } from '../../servicios/modal-cargando-servicio';
 import { AuthServiceTs } from '../../servicios/auth.service';
 import { TareaCronometroServicio } from '../../servicios/tarea-cronometro-servicio';
 import { UpperCasePipe } from '@angular/common';
+import { CronometroServicio } from '../../servicios/cronometro-servicio';
 
 @Component({
   selector: 'app-ingreso',
@@ -41,6 +42,8 @@ faEyeSlash = faEyeSlash;
   private authService = inject(AuthServiceTs);
   private router = inject(Router)
   private tareaCronometroServicio = inject(TareaCronometroServicio)
+  private cronometroServicio = inject(CronometroServicio)
+  private intervalo: any;
 
   formulario = this.fb.group({
     email: ['ingesistemas@gmail.com', [Validators.required, Validators.email]],
@@ -82,20 +85,40 @@ faEyeSlash = faEyeSlash;
               })
             } else {
               this.authService.setToken(resp.token);
-              this.datosServicio.setUser({
-                id: resp.user.id,
-                id_empresa: resp.user.id_empresa,
-                email: resp.user.email,
-                id_rol: resp.user.id_rol
-              })
+              
               let epicaActiva = (resp.user.epica_activa?.nombre ?? '').toUpperCase();
               let tareaActiva = resp.user.tarea_activa?.detalle ?? ''
               let actividad = ''
               if(tareaActiva != ''){
                 actividad = epicaActiva + ' - ' + tareaActiva
               }
-              
+              //let fecha = new Date().toISOString();
+              let id_epica = 0
+              let fecActiva = null
+              let tiempo = 0
+              let id_tarea = 0
               this.tareaCronometroServicio.setTarea(actividad)
+              if(resp.user.tarea_activa){
+                  id_epica = resp.user.epica_activa.id
+                  id_tarea = resp.user.tarea_activa.id
+                  fecActiva = resp.user.tarea_activa.fec_ini
+                  tiempo = resp.user.tarea_activa.tiempo
+              } 
+              this.datosServicio.setUser({
+                id: resp.user.id,
+                id_empresa: resp.user.id_empresa,
+                email: resp.user.email,
+                id_rol: resp.user.id_rol,
+                id_epica: id_epica,
+                id_tarea: id_tarea,
+                fec_ini: fecActiva,
+                tiempo: tiempo
+              })
+              
+              this.cronometroServicio.setActivo(fecActiva, tiempo)
+              this.cronometroServicio.setCronometro();
+              this.intervalo = setInterval(() => this.cronometroServicio.setCronometro(), 60000);
+
               this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' })
               this.router.navigateByUrl("/contenedor")
             }
