@@ -5,7 +5,7 @@ ul {
 
 li{
     padding: 8px;
-    color: rgb(0, 105, 143);
+    color: rgb(1, 80, 125) !important;
 }
 
 li:hover{
@@ -14,10 +14,19 @@ li:hover{
 }
 
 .icono{
-    color:rgb(2, 84, 155);
     margin-right: 10px;
+    color: rgb(1, 80, 125);
 }
 
 #canvasAdminLabel{
-    color: rgb(0, 160, 209);
+   color: rgb(1, 80, 125);
+}
+
+.accordion-body ul li{
+     color: rgb(1, 80, 125) !important;
+}
+
+.accordion-button{
+    font-weight: bold;
+    color: rgb(0, 82, 133);
 }

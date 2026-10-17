@@ -21,9 +21,9 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { IProyecto } from '../../../interfaces/iproyecto';
 import { Image, ImageToolbar, ImageUpload, FileRepository, FontBackgroundColor, FontColor, ClassicEditor, Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, ImageResize, ImageStyle } from 'ckeditor5';
 import { DatosFormServicio } from '../../../servicios/datos-form-servicio';
-import { ListarTareas } from "../listar-tareas/listar-tareas";
 import { DatosTareasServicio } from '../../../servicios/datos-tareas-servicio';
 import { ModalFormularioTareaServicio } from '../../../servicios/modal-formulario-tarea';
+import { ListarTareas } from '../../tareas/listar-tareas/listar-tareas';
 
 // Adaptador para convertir imágenes pegadas o subidas a Base64
 class CustomBase64Adapter {
@@ -191,17 +191,16 @@ export class CrearProgramaEpica {
 
   ngOnInit(): void {    
     let datos = this.datosFormServicio.datos()
-    if(Object.keys(datos).length > 0){
-      this.formulario.patchValue({
-        historia: datos.historia,
-      })
-      if (!this.formulario.get('historia')?.value?.trim()) {
-        this.mostrarHistoriaEpica = true
+    if(datos){
+      if(Object.keys(datos).length > 0){
+        this.formulario.patchValue({
+          historia: datos.historia,
+        })
+        if (!this.formulario.get('historia')?.value?.trim()) {
+          this.mostrarHistoriaEpica = true
+        }
       }
-       
-      
     }
-    
   }
 
   validar(campo: string, formulario: string) {
@@ -229,9 +228,11 @@ export class CrearProgramaEpica {
 
   nuevaTarea(){
     let datos = this.datosFormServicio.datos()
-    this.modalFormularioTareaServicio.abrirModal(datos)
-    /* this.formularioTareas.reset()
-    this.mostrarFormularioTareas = !this.mostrarFormularioTareas */
+    /*this.modalFormularioTareaServicio.abrirModal(datos, false)*/
+    /* this.router.navigate(['/crear-tarea'], {
+      state: { datos: datos }
+    }) */
+   this.router.navigateByUrl('/crear-tarea')
   }
 
   aceptarHistoria() {

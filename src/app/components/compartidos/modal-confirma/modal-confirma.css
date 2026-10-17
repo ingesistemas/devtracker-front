@@ -1,0 +1,110 @@
+:host {
+  display: block;
+  max-width: 100%;
+}
+
+/* ===== Título ===== */
+mat-dialog-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ===== Contenido / Mensaje ===== */
+mat-dialog-content {
+  padding: 1.5rem;
+  color: #374151;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+mat-dialog-content p {
+  margin: 0;
+}
+
+/* ===== Barra de botones ===== */
+mat-dialog-actions {
+  padding: 1rem 1.5rem 1.25rem;
+  margin: 0;
+  border-top: 1px solid #f3f4f6;
+  gap: 0.75rem;
+}
+
+/* ===== Botones ===== */
+mat-dialog-actions button {
+  min-width: 100px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Botón Confirmar */
+mat-dialog-actions button[color="primary"] {
+  background-color: #2563eb;
+  color: white;
+}
+
+mat-dialog-actions button[color="primary"]:hover {
+  background-color: #1d4ed8;
+}
+
+/* Botón Cancelar */
+mat-dialog-actions button[mat-button] {
+  color: #4b5563;
+}
+
+mat-dialog-actions button[mat-button]:hover {
+  background-color: #f3f4f6;
+}
+
+/* ===== Variante: Si usas <div> con atributos ===== */
+[mat-dialog-title] {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 1.25rem 1.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+[mat-dialog-content] {
+  padding: 1.5rem;
+  color: #374151;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+[mat-dialog-actions] {
+  padding: 1rem 1.5rem 1.25rem;
+  margin: 0;
+  border-top: 1px solid #f3f4f6;
+  gap: 0.75rem;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 480px) {
+  mat-dialog-title,
+  [mat-dialog-title] {
+    padding: 1rem 1rem 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  mat-dialog-content,
+  [mat-dialog-content] {
+    padding: 1rem;
+  }
+
+  mat-dialog-actions,
+  [mat-dialog-actions] {
+    padding: 0.75rem 1rem 1rem;
+    flex-direction: column-reverse;
+  }
+
+  mat-dialog-actions button,
+  [mat-dialog-actions] button {
+    width: 100%;
+  }
+}

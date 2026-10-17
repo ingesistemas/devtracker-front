@@ -16,6 +16,9 @@ import { ListarUsuarios } from './components/usuarios/listar-usuarios/listar-usu
 import { CrearUsuario } from './components/usuarios/crear-usuario/crear-usuario';
 import { ListarEpicas } from './components/epicas/listar-epicas/listar-epicas';
 import { Inicio } from './components/inicio/inicio';
+import { CrearTarea } from './components/tareas/crear-tarea/crear-tarea';
+import { ListarQa } from './components/QA/listar-qa/listar-qa';
+import { RechazarTarea } from './components/tareas/rechazar-tarea/rechazar-tarea';
 
 export const routes: Routes = [
     {
@@ -91,5 +94,19 @@ export const routes: Routes = [
         component: ContieneCrearProgramaEpica,
         canActivate: [authGuard]
     },
-    
+    {
+        path:'crear-tarea',
+        component: CrearTarea,
+        canActivate: [authGuard]
+    },
+    {
+        path:'listar-qa',
+        component: ListarQa,
+        canActivate: [authGuard]
+    },
+    {
+        path:'crear-rechazo',
+        component: RechazarTarea,
+        canActivate: [authGuard]
+    },
 ];

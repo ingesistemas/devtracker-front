@@ -1,0 +1,166 @@
+<!-- @if(data()){ -->
+    <div class="titulo-tabla"><h3>{{ tituloFormulario }}</h3> </div>
+    <div class="card-form" style="width: 80%;">
+        <form [formGroup]="formularioTareas" autocomplete="off">                    
+            <div class="row">
+                <div class="col-md-6 row">
+                    <div class="mb-3 col-md-12">
+                        <label class="form-label">Nombre de la tarea</label>
+                        <input type="text" class="form-control form-control-sm mInput" formControlName="nombre" >
+                        <mat-error>{{ validar('nombre','formularioTareas') }}</mat-error>
+                    </div>
+
+                    <div class="mb-3 col-md-12">
+                        <label class="form-label">Detalle de la tarea</label>
+                        <textarea  class="form-control form-control-sm mInput" formControlName="detalle" rows="5" ></textarea>
+                        <mat-error>{{ validar('detalle','formularioTareas') }}</mat-error>
+                    </div>
+
+                    <div class="mb-3 col-md-12">
+                        <label class="form-label">Observación</label>
+                        <textarea  class="form-control form-control-sm mInput" formControlName="observacion" rows="5" ></textarea>
+                        <mat-error>{{ validar('observacion','formularioTareas') }}</mat-error>
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label mb-0 me-2 text-nowrap">¿Esta tara necesita aprobación de calidad?</label>
+                            <mat-select class="mSelect" formControlName="calidad" style="min-width: 120px;">
+                                <mat-option value="SI" class="mInput-option">SI</mat-option>
+                                <mat-option value="NO" class="mInput-option">NO</mat-option>                     
+                            </mat-select>
+                        </div>
+                        <mat-error class="mt-1">{{ validar('calidad', 'formularioTareas') }}</mat-error>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 row">
+                    <div class="mb-3 col-md-4">
+                        <label class="form-label">Fecha posible entrega</label>
+                        <input type="date" class="form-control form-control-sm mInput" formControlName="f_pentrega" >
+                        <mat-error>{{ validar('f_pentrega','formularioTareas') }}</mat-error>
+                    </div>
+
+                    <div class="mb-3 col-md-4">
+                        <label class="form-label">Complejidad</label>
+                        <mat-select class="mSelect" formControlName="id_complejidad">
+                        @for (item of listaComplejidades; track item.id) {
+                            <mat-option 
+                            [value]="item.id" 
+                            class="mInput-option" >
+                            {{ item.nombre }}
+                            </mat-option>
+                        }
+                        </mat-select>
+                        <mat-error>{{ validar('id_complejidad', 'formularioTareas') }}</mat-error>
+                    </div>
+
+                    <div class="mb-3 col-md-4">
+                        <label class="form-label">Prioridad</label>
+                        <mat-select class="mSelect" formControlName="id_prioridad">
+                        @for (item of listaPrioridades; track item.id) {
+                            <mat-option 
+                            [value]="item.id" 
+                            class="mInput-option" >
+                            {{ item.nombre }}
+                            </mat-option>
+                        }
+                        </mat-select>
+                        <mat-error>{{ validar('id_prioridad', 'formularioTareas') }}</mat-error>
+                    </div>
+                    
+                    @if(usuarioActual != ''){
+                        <small style="color: rgb(0, 80, 167);">Usuario actual: <strong>{{ usuarioActual }}</strong> </small>
+                    }
+                    
+                    <div class="separador-titulo">
+                        <span>Asignar tarea</span>
+                    </div>
+                    
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Grupo de trabajo</label>
+                        <mat-select class="mSelect" formControlName="id_grupo" (selectionChange)="filtrarUsuarios()">
+                        @for (item of grupos; track item.id) {
+                            <mat-option 
+                            [value]="item.id" 
+                            class="mInput-option" >
+                            {{ item.grupo }}
+                            </mat-option>
+                        }
+                        </mat-select>
+                        <mat-error>{{ validar('id_grupo', 'formularioTareas') }}</mat-error>
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Usuario</label>
+                        <mat-select class="mSelect" formControlName="id_reasig" (selectionChange)="onUsuarioChange($event.value)">
+                            <mat-option [value]="" class="mInput-option" ></mat-option>
+                        @for (item of usuariosGrupo; track item.id) {
+                            <mat-option 
+                            [value]="item.id" 
+                            class="mInput-option" >
+                            {{ item.nombre }}
+                            </mat-option>
+                        }
+                        </mat-select>
+                        <mat-error>{{ validar('id_reasig', 'formularioTareas') }}</mat-error>
+                    </div>
+
+                </div>
+                
+
+                
+
+
+            </div>
+        </form>
+
+        <div class="card-footer">
+             <div class="d-flex justify-content-start gap-2 flex-wrap">
+                @if(edicion){     
+                    @if(!observa){
+                        <button 
+                            type="button" 
+                            class="btn btn-sm btn-aceptar d-flex align-items-center" 
+                            (click)="editar()">
+                            <fa-icon [icon]="faCheck"></fa-icon>
+                            <span>Editar tarea</span>
+                        </button>
+                    } @else {
+                        @if(editarObs){
+                             <button 
+                                type="button" 
+                                class="btn btn-sm btn-aceptar" 
+                                (click)="editarObservacion()">
+                                <fa-icon [icon]="faCheck" ></fa-icon>
+                                <span>Editar observación</span>
+                            </button>
+                        } @else {
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-aceptar" 
+                                (click)="crearObs()">
+                                <fa-icon [icon]="faCheck" ></fa-icon>
+                                <span>Crear observación</span>
+                            </button>
+                        }
+                       
+                    }    
+                    
+                } @else {
+                        <button 
+                        type="button" 
+                        class="btn btn-sm btn-aceptar" 
+                        (click)="aceptar()">
+                        <fa-icon [icon]="faCheck"></fa-icon>
+                        <span>Crear tarea</span>
+                    </button>
+                }
+                <button type="button" class="btn btn-sm btn-cancelar" (click)="cerrar()"><fa-icon
+                [icon]="faRotateLeft"></fa-icon> Cerrar</button>
+            </div>
+        </div>
+    </div>
+<!-- }
+ -->

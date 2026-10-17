@@ -85,21 +85,38 @@
 .opcion-tabla{
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
 }
+
+.opcion-tabla .texto{
+  padding: 0 10px;
+  text-align: justify;
+}
+
+.opcion-tabla .titulo-menu{
+    font-weight: bold;
+    padding: 10px;
+    background-color: #e0e0e0;
+    color: #002e9b !important;
+
+}
 ::ng-deep .opcion-tabla {
   margin-left: 120px !important; /* Ajusta la cantidad de píxeles hacia la izquierda */
   margin-top: -30px !important;   /* Lo sube para alinearlo con el botón de los 3 puntos */
+
   }
 
 .opcion-menu {
     color: #484848 !important;
     padding-bottom: 0px !important;
+    width: 100% !important;
 }
+
 
 .menu-filtro {
     position: relative !important;
     overflow: visible !important;
     background: #f2f2f2 !important; 
 }
+
 
 .opcion-menu:hover {
     background-color: #dedede !important;
@@ -297,7 +314,37 @@ mat-form-field.filtro-activo .mat-mdc-select-arrow {
     border-radius: 6px !important; /* Opcional: para suavizar los bordes */
 }
 
-/* Color de fondo cuando el filtro esté activo (si usas la clase .filtro-activo) */
-.filtro-compacto.filtro-activo .mat-mdc-text-field-wrapper {
-    /* background-color: #f2f2f2 !important; */ /* Fondo suave al seleccionar opciones */
+.ico_historial{
+    width: 550px !important;
+    color: #00669d !important;
+    padding: 2px;
+    border-radius: 3px;
 }
+
+
+.ico_historial:hover{
+    color: #0a5f8d;
+     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+   
+}
+
+.ico-aprobar{
+    margin-left: 20px;
+    color: #148700;
+    width: 50px;
+    padding: 3px;
+    border-radius: 2px;
+}
+
+.ico-aprobar:hover{
+     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+   
+}
+
+.ico-rechazar{
+  color: #d11f1f;
+   width: 50px;
+   margin-left: 20px;
+}
+
+

@@ -3,9 +3,11 @@ import { IEmpresa } from "./iempresa";
 import { IProyecto } from "./iproyecto";
 import { IUsuario } from "./iusuario";
 import { IEstado } from "./iestado";
+import { Iobservacion } from "./iobservacion";
 
 export interface ITarea {
   id: number;
+  nombre: string;
   detalle: string;
   f_pentrega: string;
   f_rentrega: string;
@@ -25,4 +27,6 @@ export interface ITarea {
   id_prioridad: number;
   nom_prioridad: string;
   nom_complejidad: string;
+  ruta_origen: string;
+  observaciones: Iobservacion[];
 }

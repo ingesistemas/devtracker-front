@@ -1,0 +1,340 @@
+<!-- SECCIÓN DE FILTROS MULTI-SELECCIÓN -->
+<div class="contiene-filtros gap-3 d-flex flex-wrap" style="margin-top: 0px !important; padding: 15px !important;">    
+    <!-- Filtro Prioridad -->
+    <mat-form-field appearance="outline" class="filtro-compacto" [class.filtro-activo]="filtroPrioridad && filtroPrioridad.length > 0">
+        <mat-label>Prioridad</mat-label>
+        <mat-select #selectPrioridad [(ngModel)]="filtroPrioridad" (selectionChange)="aplicarFiltrosCombinados()" multiple placeholder="Todas">
+            <mat-option [value]="0" (onSelectionChange)="toggleTodosPrioridades($event, selectPrioridad)">-- Todas --</mat-option>
+            @for (prio of listaPrioridades; track prio.id) {
+                <mat-option [value]="prio.id">{{ prio.nombre }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Filtro Complejidad -->
+    <mat-form-field appearance="outline" class="filtro-compacto" [class.filtro-activo]="filtroComplejidad && filtroComplejidad.length > 0">
+        <mat-label>Complejidad</mat-label>
+        <mat-select #selectComplejidad [(ngModel)]="filtroComplejidad" (selectionChange)="aplicarFiltrosCombinados()" multiple placeholder="Todas">
+            <mat-option [value]="0" (onSelectionChange)="toggleTodasComplejidades($event, selectComplejidad)">-- Todas --</mat-option>
+            @for (compl of listaComplejidades; track compl.id) {
+                <mat-option [value]="compl.id">{{ compl.nombre }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Filtro Estado -->
+    <mat-form-field appearance="outline" class="filtro-compacto" [class.filtro-activo]="filtroEstado && filtroEstado.length > 0">
+        <mat-label>Estado</mat-label>
+        <mat-select #selectEstado [(ngModel)]="filtroEstado" (selectionChange)="aplicarFiltrosCombinados()" multiple placeholder="Todos">
+            <mat-option [value]="0" (onSelectionChange)="toggleTodosEstados($event, selectEstado)">-- Todos --</mat-option>
+            @for (est of listaEstados; track est.id) {
+                <mat-option [value]="est.id">{{ est.estado }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Filtro Asignado a -->
+    <mat-form-field appearance="outline" class="filtro-compacto" [class.filtro-activo]="filtroUsuario && filtroUsuario.length > 0">
+        <mat-label>Asignado a</mat-label>
+        <mat-select #selectUsuario [(ngModel)]="filtroUsuario" (selectionChange)="aplicarFiltrosCombinados()" multiple placeholder="Todos">
+            <mat-option [value]="0" (onSelectionChange)="toggleTodosUsuarios($event, selectUsuario)">-- Todos --</mat-option>
+            @for (usu of listaUsuarios; track usu.id) {
+                <mat-option [value]="usu.id">{{ usu.nombre }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <div style="margin-top: -20px;">
+        <button class="btn btn-sm btn-enlace" (click)="limpiarFiltros()">
+            <fa-icon [icon]="faBroom" class="me-2"></fa-icon>Limpiar Filtros<span></span>
+        </button>
+    </div>
+      
+</div>
+
+<div class="card-form" style="width: 100%;">
+    <div class="contiene-tablas" style="scrollbar-width: auto;">
+        <!-- LEYENDA DE PRIORIDADES -->
+        <div class="header-busqueda">
+            <div class="leyenda-prioridades">
+                <div>
+                    <h6 style="color: rgb(4, 127, 179); margin-top: 7px;">Prioridades:</h6>
+                </div>                
+                <div class="item-prioridad">
+                    <span class="cuadro bg-prioridad-4"></span>
+                    <span class="texto">Crítica</span>
+                </div>
+                <div class="item-prioridad">
+                    <span class="cuadro bg-prioridad-3"></span>
+                    <span class="texto">Alta</span>
+                </div>
+                <div class="item-prioridad">
+                    <span class="cuadro bg-prioridad-2"></span>
+                    <span class="texto">Media</span>
+                </div>
+                <div class="item-prioridad">
+                    <span class="cuadro bg-prioridad-1"></span>
+                    <span class="texto">Baja</span>
+                </div>
+            </div>
+           
+        </div>
+
+        <div class="mat-shadow-2 contiene-tabla">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort cdkDropList (cdkDropListDropped)="drop($event)" class="tabla">                
+                
+                <ng-container matColumnDef="mover">
+                    <th mat-header-cell *matHeaderCellDef aria-label="Mover fila" class="mat-column-expand">&nbsp;</th>
+                    <td mat-cell *matCellDef="let row" class="mat-column-drag mat-column-expand">
+                        <button mat-icon-button type="button" cdkDragHandle class="btn-drag cursor-grab btn-acciones" [disabled]="filtrado">
+                            <mat-icon class="example-drag-cursor">reorder</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Columna de Expansión Compacta -->
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="Acción desplegar" class="mat-column-expand">&nbsp;</th>
+                    <td mat-cell *matCellDef="let row" class="mat-column-expand">
+                        <button mat-icon-button 
+                                type="button"
+                                aria-label="desplegar observaciones" 
+                                (click)="toggleFila(row); $event.stopPropagation()"
+                                class="btn-acciones">
+                            <mat-icon>{{ elementoExpandido === row ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Accion (Slide Toggle Cronometro) -->
+                <ng-container matColumnDef="accion">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+                    <td mat-cell *matCellDef="let row">
+                        @if(row.id_reasig == id_usuario  && row.id_estado != '12'){
+                            <mat-slide-toggle class="toggle-compacto" [checked]="row.cronometro != 0" (change)="cambiarEstadoTarea(row, $event.checked)">
+                            </mat-slide-toggle> 
+                        }
+                    </td>
+                </ng-container>
+
+
+                <!-- Opciones (Menú flotante) -->
+                <ng-container matColumnDef="Opciones">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="mat-column-opciones"> </th>
+                    <td mat-cell *matCellDef="let row" class="mat-column-opciones"> 
+                        @if(row.id_reasig == id_usuario && row.id_estado != '12'){
+                            <a matIconButton [matMenuTriggerFor]="menu" aria-label="Opciones" class="btn-acciones">
+                                <mat-icon>more_vert</mat-icon>
+                            </a>
+                            <mat-menu #menu="matMenu" class="opcion-tabla">
+                                <div class="titulo-menu">{{row.nombre}}</div>
+                                @if(row.activo == 0){
+                                    <button mat-menu-item class="opcion-menu" (click)="abrirConfirmacion(row)">
+                                        <span><fa-icon [icon]="faEyeSlash" class="me-2"></fa-icon>Archivar</span>
+                                    </button>
+                                    <div class="texto">
+                                        <small>Recuerda que al archivarla no se elimina del sistema; solamente se marca como congelada para desarrollar más adelante, sin hacerle seguimiento diario.</small>
+                                    </div>
+                                    <hr>
+                                    <button mat-menu-item class="opcion-menu" (click)="editar(row)">
+                                        <span><fa-icon [icon]="faPenToSquare" class="me-2"></fa-icon>Editar</span>
+                                    </button>
+                                    <div class="texto">
+                                        <small>Editar la fecha de la posible entrega, complejidad, prioridad y % de avance.</small>
+                                    </div>
+                                    <hr>
+                                    <button mat-menu-item class="opcion-menu" (click)="observaciones(row)">
+                                        <span><fa-icon [icon]="faCommentDots" class="fa-thin me-2"></fa-icon>Crear observación</span>
+                                    </button>
+                                    <div class="texto">
+                                        <small>Agregar observaciones que crea conveniente a la tarea actual.</small>
+                                    </div>
+                                    <hr>
+                                    <button mat-menu-item class="opcion-menu" (click)="eliminar(row)">
+                                        <span><fa-icon [icon]="faTrashCan" class="me-2"></fa-icon>Eliminar</span>
+                                    </button>
+                                    <div class="texto">
+                                        <small>Eliminar la tarea por completo de la base de datos.</small>
+                                        <br>
+                                        <small><strong>Nota:</strong> Si la tarea ya cuenta con registros, no se podrá eliminar. En ese caso se recomienda archivar.</small>
+                                    </div>
+                                } @else {
+                                    <button mat-menu-item class="opcion-menu" (click)="abrirConfirmacion(row)">
+                                        <span><fa-icon [icon]="faUpload" class="me-2"></fa-icon>Desarchivar</span>
+                                    </button>
+                                    <div class="texto">
+                                        <small>Desarchivar la tarea para continuar tanto con el desarrollo como con su seguimiento diario.</small>
+                                    </div>
+                                }                                                
+                            </mat-menu>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="historial">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+                    <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
+                        class="texto-ajustado" [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        <span (click)="modalHistorial(row)"><fa-icon [icon]="faBinoculars" class="ico_historial" 
+                            matTooltip="Consultar historial de la tarea."
+                            matTooltipClass="mi-tooltip-personalizado"></fa-icon></span>
+                    </td>
+                </ng-container>
+
+                <!-- Tarea -->
+                <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tarea</th>
+                    <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
+                        class="texto-ajustado" [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        {{ row.nombre }}
+                    </td>
+                </ng-container>
+
+                <!-- Posible entrega -->
+                <ng-container matColumnDef="f_pentrega">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Posible entrega</th>
+                    <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
+                        [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        {{ row.f_pentrega | date:'dd/MM/yyyy':'UTC' }} - {{ row.tiempo | tiempoFormato }} 
+                    </td>
+                </ng-container>
+
+                <!-- Estado -->
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+                    <td mat-cell *matCellDef="let row">
+                        @if(row.id_reasig == id_usuario){
+                            <select class="form-select form-select-sm estado" 
+                            [id]="row.id" (change)="actualizarEstado(row, $event)"
+                             [ngClass]="{
+                                'texto-estado-rechazo': [8, 10].includes(row.id_estado),
+                                'texto-estado-aprobado': [5, 9, 11].includes(row.id_estado),
+                                'texto-estado-produccion': [6].includes(row.id_estado)}">        
+                                @for (item of estados; track item.id) {
+                                    <option [value]="item.id" [selected]="item.id == row.id_estado" > 
+                                        {{ item.estado }}
+                                    </option>
+                                }
+                            </select>
+                        }
+                    </td>
+                </ng-container>
+
+                <!-- Complejidad -->
+                <ng-container matColumnDef="complejidad">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Complejidad </th>
+                    <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
+                        [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        {{ row.nom_complejidad }} 
+                    </td>
+                </ng-container>
+
+                <!-- Prioridad -->
+                <ng-container matColumnDef="prioridad">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Prioridad </th>
+                    <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
+                        [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        {{ row.nom_prioridad }} 
+                    </td>
+                </ng-container>
+
+                <!-- Creado por -->
+                <ng-container matColumnDef="creadoPor">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                        <fa-icon [icon]="faCircleQuestion" style="color: #FFF !important; margin-right: 5px !important;"></fa-icon> Creado por: 
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="sin-salto" [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        <button [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" type="button" class="btn-user-link"
+                                #trigger="cdkOverlayOrigin" cdkOverlayOrigin (click)="openOverlay(trigger, row.usuario_creo)">
+                            {{ row.usuario_creo?.nombre }}
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Asignado a -->
+                <ng-container matColumnDef="asignado">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> 
+                        <fa-icon [icon]="faCircleQuestion" style="color: #FFF !important; margin-right: 5px !important;"></fa-icon> Asignado a: 
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="texto-ajustado" [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                        <button [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" type="button" class="btn-user-link"
+                                #trigger="cdkOverlayOrigin" cdkOverlayOrigin (click)="openOverlay(trigger, row.usuario_asignado)">
+                            {{ row.usuario_asignado?.nombre }}
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- Fila de Detalle Expandible -->
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length" style="padding: 0 !important; border: 0 !important;">
+                        <div class="detalle-wrapper" [class.detalle-wrapper-expanded]="elementoExpandido === row">
+                            @if (elementoExpandido === row) {
+                                <div class="p-3 bg-light border-top w-100">
+                                    <h6>Observaciones:</h6>
+                                    @if (row.observaciones && row.observaciones.length > 0) {
+                                        <ul class="list-group list-group-flush">
+                                            @for (obs of row.observaciones; track obs.id) {
+                                                <li class="list-group-item bg-transparent">
+                                                    <strong>{{ obs.creador?.nombre || 'Usuario' }}</strong> 
+                                                    <small class="text-muted">({{ obs.created_at | date:'dd/MM/yyyy HH:mm' }})</small>: 
+                                                    @if(row.id_reasig == id_usuario){
+                                                        <button class="btn btn-sm btn-light ico-edit-obs" (click)="editarObservaciones(row, obs)">
+                                                            <span><fa-icon [icon]="faPenToSquare" ></fa-icon></span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-light ico-delete-obs" (click)="eliminarObs(row, obs)"> 
+                                                            <span><fa-icon [icon]="faTrashCan" ></fa-icon></span>
+                                                        </button>                                                        
+                                                    }
+                                                   
+                                                    <span>{{ obs.observacion }}</span>
+                                                </li>
+                                            }
+                                        </ul>
+                                    } @else {
+                                        <span class="text-muted small">No hay observaciones registradas para esta tarea.</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Filas de la Tabla -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row 
+                    *matRowDef="let row; columns: displayedColumns;" 
+                    class="fila-elemento" 
+                    [class.fila-expandida]="elementoExpandido === row"
+                    cdkDrag 
+                    [cdkDragData]="row">
+                </tr>
+                
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="fila-detalle"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" [attr.colspan]="displayedColumns.length">No se encontraron datos coincidentes.</td>
+                </tr>
+            </table>
+
+            <!-- PAGINADOR RESTAURADO -->
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Paginación de tareas"></mat-paginator>
+
+            <!-- CDK Overlay (Popover de usuario) -->
+            <ng-template
+                cdkConnectedOverlay
+                [cdkConnectedOverlayOrigin]="activeTrigger"
+                [cdkConnectedOverlayOpen]="isOpen"
+                [cdkConnectedOverlayHasBackdrop]="true"
+                cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+                (backdropClick)="closeOverlay()"
+                (detach)="closeOverlay()">
+                <app-popover
+                    [isOpen]="isOpen"
+                    [trigger]="activeTrigger"
+                    [user]="selectedUser"
+                    (close)="closeOverlay()">
+                </app-popover>
+            </ng-template>
+        </div>
+    </div>
+</div>

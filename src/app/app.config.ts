@@ -8,6 +8,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { JwtInterceptorTs } from './servicios/jwt.interceptor';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { SpanishPaginatorIntlTs } from './servicios/spanish-paginator-intl.ts';
+import { authInterceptor } from './interceptors/auth.interceptors';
 
 
 // 1. Importar PrimeNG y el tema deseado
@@ -18,7 +19,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([JwtInterceptorTs])),
+    provideHttpClient(
+      withInterceptors([JwtInterceptorTs, authInterceptor]),
+    ),
     { provide: MatPaginatorIntl, useClass: SpanishPaginatorIntlTs },
     provideAnimationsAsync(), // Requerido para las transiciones de los toasts
     provideToastr({

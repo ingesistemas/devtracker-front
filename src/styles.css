@@ -471,8 +471,34 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .cdk-overlay-container {
-  z-index: 2000 !important;
+  z-index: 2000 ;
 }
+
+.cdk-overlay-container .cdk-overlay-pane {
+  z-index: auto !important;
+}
+
+
+
+/* Aplicas el fondo azul a la superficie interna del tooltip que genera Angular Material */
+.mi-tooltip-personalizado .mdc-tooltip__surface {
+  background-color: #f2f3f4 !important; 
+  color: #004b88 !important;         
+  font-size: 10px !important;        
+  font-weight: 100;
+  border-radius: 6px;
+  padding: 8px 12px !important;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  
+}
+
+/* Si tu versión de Angular Material usa la capa de contenedor flotante (overlay), asegúrate de limpiar el fondo del contenedor principal para que no se duplique con bordes */
+.cdk-overlay-pane .mi-tooltip-personalizado {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+
 
 ::ng-deep .ck-editor {
   --ck-color-toolbar-background: #f3f3f3;  /* Fondo modo oscuro */
@@ -480,6 +506,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --ck-color-base-border: #e2e2e2 !important;          /* Color de bordes */
   --ck-color-button-default-hover-background: #e2e2e2 !important;
 }
+
+
 /* :root {
   --mat-select-panel-background-color: rgb(243, 243, 243) !important;
   --mat-select-enabled-trigger-text-color: rgb(5, 105, 187) !important;
@@ -513,4 +541,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .popover-body{
     text-align: justify;
+}
+
+
+mat-slide-toggle {
+  transform: scale(0.8);
+  transform-origin: left center; /* Asegura que se reduzca hacia la izquierda y no se mueva raro */
 }

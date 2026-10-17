@@ -66,6 +66,20 @@ form {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
+.btn-enlace{
+    color:#006c97;
+    border-color: #95c8dc;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.btn-enlace:hover{
+    border-color: #008bc2;
+     background-color: #0096cc !important;
+    color: #fdfdfd !important;
+}
+
 .btn-group {
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
@@ -103,7 +117,7 @@ mat-error {
 
 p{
     text-align: justify;
-    color: #6c6e70;
+    color: #5c5c5c;
 
 }
 

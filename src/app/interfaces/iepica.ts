@@ -3,6 +3,7 @@ import { IEmpresa } from "./iempresa";
 import { IProyecto } from "./iproyecto";
 import { IUsuario } from "./iusuario";
 import { IEstado } from "./iestado";
+import { ITarea } from "./itarea";
 
 export interface IEpica {
   id: number;
@@ -20,6 +21,7 @@ export interface IEpica {
   estado: IEstado;
   usuario_creo: IUsuario;
   usuario_asignado: IUsuario;
+  tareas: ITarea;
   created_at: Date;
   activo: boolean;
   id_prioridad: number;

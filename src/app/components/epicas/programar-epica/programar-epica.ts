@@ -25,6 +25,7 @@ import { IEpica } from '../../../interfaces/iepica';
 import { DatosServicio } from '../../../servicios/datos-servicio';
 import { DatosFormServicio } from '../../../servicios/datos-form-servicio';
 import { DatosTareasServicio } from '../../../servicios/datos-tareas-servicio';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -44,7 +45,8 @@ import { DatosTareasServicio } from '../../../servicios/datos-tareas-servicio';
     MatIconModule, 
     CommonModule, 
     OverlayModule, 
-    Popover
+    Popover,
+    DragDropModule
   ],
   templateUrl: './programar-epica.html',
   styleUrl: './programar-epica.css',
@@ -58,6 +60,12 @@ export class ProgramarEpica {
   private datosTempServicio = inject(DatosServicio)
   private datosFormServicio = inject(DatosFormServicio)
   private datosTareasServicio = inject(DatosTareasServicio)
+
+  elementoExpandido: any | null = null;
+
+  toggleFila(row: any) {
+    this.elementoExpandido = this.elementoExpandido === row ? null : row;
+  }
 
   faSquarePlus = faSquarePlus;
   faPenToSquare = faPenToSquare;
@@ -89,7 +97,7 @@ export class ProgramarEpica {
   filtroUsuario: (number | string)[] = [];
 
   displayedColumns: string[] = [
-    'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
+    'expand', 'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
     'fpentrega', 'frentrega', 'estado', 'creadoPor', 'asignado', 'Opciones'
   ];
   
@@ -105,6 +113,26 @@ export class ProgramarEpica {
       case 2: return '#c8e6c9';
       case 1: return '#f0f0f0';
       default: return 'transparent';
+    }
+  }
+
+  getPrioridadColorBage(idPrioridad: number): string {
+    switch (idPrioridad) {
+      case 4: return '#f2d3d5';
+      case 3: return '#f0f19a';
+      case 2: return '#b6ffb9';
+      case 1: return '#dcdcdc';
+      default: return 'transparent';
+    }
+  }
+
+  getPrioridadTextColor(idPrioridad: number): string {
+    switch (idPrioridad) {
+      case 4: return '#730202'; // Texto para fondo Crítica (#ffd8dc)
+      case 3: return '#040404'; // Texto para fondo Alta (#ffecce)
+      case 2: return '#005706'; // Texto para fondo Media (#c8e6c9)
+      case 1: return '#002356'; // Texto para fondo Baja (#f0f0f0)
+      default: return '#002356';
     }
   }
 
@@ -190,7 +218,7 @@ export class ProgramarEpica {
         } else {
           this.epicas = resp.datos || [];
           this.dataSource.data = this.epicas;
-
+          console.log(this.epicas)
           this.extraerCatalogosFiltros(this.epicas);
           this.aplicarFiltrosCombinados();
 

@@ -6,12 +6,16 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ModalFormularioTareaServicio {
   private modalState = new BehaviorSubject<any>(null);
+  private edicion = new BehaviorSubject<any>(false);
+  
   modalState$ = this.modalState.asObservable();
+  edicion$ = this.edicion.asObservable();
   private callback: (() => void) | null = null;
 
-  abrirModal(data: any, callback?: () => void) {
+  abrirModal(data: any, edicion: boolean, callback?: () => void) {
     this.callback = callback || null;
-    this.modalState.next(data);
+    this.edicion.next(edicion)
+    this.modalState.next(data);   
   }
 
   cerrarModal() {

@@ -1,0 +1,115 @@
+<div class="titulo-tabla">
+  <h3>{{ titulo }}</h3>
+</div>
+
+<div class="card-form" style="width: 80%;">
+  <form [formGroup]="formulario" autocomplete="off">
+    <div class="row">
+
+      <!-- Detalle  (CKEditor con imágenes) -->
+      <div class="mb-3 col-md-12">
+        <label class="form-label">{{ titulo2 }}. - <strong>{{ tarea }}</strong> </label>
+        <ckeditor 
+          [editor]="Editor" 
+          [config]="editorConfig" 
+          formControlName="detalle">
+        </ckeditor>
+        <mat-error>{{ validar('detalle') }}</mat-error>
+      </div>
+
+      <div class="mb-3 col-md-6">
+        <label class="form-label">Adjuntar documento PDF</label>
+        @if (accion === 'consultar') {
+          <!-- MODO SOLO LECTURA -->
+          <div class="mt-1">
+            @if (tareas?.ruta_pdf) {
+              <a [href]="tareas.ruta_pdf" target="_blank" class="btn-ver-pdf">
+                <mat-icon class="icono-ver-pdf">picture_as_pdf</mat-icon> Ver PDF Adjunto
+              </a>
+            } @else {
+              <small class="text-muted d-block">No hay PDF adjunto.</small>
+            }
+            
+          </div>
+        } @else { 
+          <input 
+            type="file" 
+            class="form-control form-control-sm mInput" 
+            accept="application/pdf"
+            (change)="onFileSelected($event)">
+          
+          @if (archivoPdfNombre) {
+            <small class="text-muted mt-1 d-block">
+              <span class="text-primary">Archivo seleccionado:</span> {{ archivoPdfNombre }}
+            </small>
+          }
+
+          @if (tareas?.ruta_pdf) {
+            <a [href]="tareas.ruta_pdf" target="_blank" class="btn-ver-pdf mt-1 d-inline-block">
+              <mat-icon class="icono-ver-pdf">picture_as_pdf</mat-icon> Ver PDF Actual
+            </a>
+          }
+        }
+        <mat-error>{{ validar('archivo_pdf') }}</mat-error>
+      </div>
+
+      <div class="mb-3 col-md-6">
+        <label class="form-label">Adjuntar video</label>
+        @if (accion === 'consultar') {
+          @if (tareas?.ruta_video) {
+            <a [href]="tareas.ruta_video" target="_blank" class="btn-ver-pdf">
+              <mat-icon class="icono-ver-pdf">videocam</mat-icon> Ver Video Adjunto
+            </a>
+          } @else {
+            <small class="text-muted d-block">No hay video adjunto.</small>
+          }
+        }@else {
+          <input 
+            type="file" 
+            class="form-control form-control-sm mInput" 
+            accept="video/*"
+            (change)="onVideoSelected($event)"
+            formControlName="archivo_video">
+          
+          @if (archivoVideoNombre) {
+            <small class="text-muted mt-1 d-block">
+              <span class="text-primary">Archivo seleccionado:</span> {{ archivoVideoNombre }}
+            </small>
+          }
+          @if (tareas?.ruta_video) {
+            <a [href]="tareas.ruta_video" target="_blank" class="btn-ver-pdf">
+              <mat-icon class="icono-ver-pdf">videocam</mat-icon> Ver Video Adjunto
+            </a>
+          }
+        }
+        
+        <mat-error>{{ validar('archivo_video') }}</mat-error>
+      </div>
+
+
+      
+    </div>
+  </form>
+
+  <div class="card-footer">
+    <div class="d-flex justify-content-start gap-2 flex-wrap">
+      @if(accion != 'consultar'){
+        <button 
+          type="button" 
+          class="btn btn-sm btn-aceptar d-flex align-items-center" 
+          (click)="aceptar()">
+          <fa-icon [icon]="faCheck" class="me-2"></fa-icon>
+          <span>Aceptar</span>
+        </button>
+      }
+      
+      <button 
+        type="button" 
+        class="btn btn-sm btn-cancelar d-flex align-items-center" 
+        (click)="cancelar()">
+        <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
+        <span>Cancelar</span>
+      </button>
+    </div>
+  </div>
+</div>

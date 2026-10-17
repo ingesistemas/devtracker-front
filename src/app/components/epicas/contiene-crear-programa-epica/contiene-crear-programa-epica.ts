@@ -5,6 +5,7 @@ import { CrearProgramaEpica } from '../crear-programa-epica/crear-programa-epica
 import { DescribirProgramaEpica } from '../describir-programa-epica/describir-programa-epica';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalFormularioTarea } from "../../compartidos/modal-formulario-tarea/modal-formulario-tarea";
+import { CrearTarea } from '../../tareas/crear-tarea/crear-tarea';
 
 @Component({
   selector: 'app-contiene-crear-programa-epica',
@@ -13,5 +14,5 @@ import { ModalFormularioTarea } from "../../compartidos/modal-formulario-tarea/m
   styleUrl: './contiene-crear-programa-epica.css',
 })
 export class ContieneCrearProgramaEpica {
-
+  
 }

@@ -3,33 +3,29 @@
      <div class="contieneBotones d-flex ms-auto justify-content-end gap-2">
         @if(!mostrarFormularioTareas){
             <button 
-                type="button" 
-                class="btn btn-sm btn-aceptar btn-amplio2 d-flex align-items-center" 
+                class="btn btn-sm btn-enlace btn-amplio2 " 
                 (click)="nuevaTarea()">
                 <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
-                <span>Agregar tarea</span>
+                Agregar tarea
             </button>
         }
          @if(!mostrarHistoriaEpica){
             <button 
-                type="button" 
-                class="btn btn-sm btn-aceptar btn-amplio2 d-flex align-items-center" 
+                class="btn btn-sm btn-enlace btn-amplio2 " 
                 (click)="mostrarHistoriaEpica = !mostrarHistoriaEpica">
                 <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
                 <span>Mostrar historia</span>
             </button>
          }@else {
             <button 
-                type="button" 
-                class="btn btn-sm btn-aceptar btn-amplio2 d-flex align-items-center" 
+                class="btn btn-sm btn-enlace btn-amplio2" 
                 (click)="mostrarHistoriaEpica = !mostrarHistoriaEpica">
                 <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
                 <span>Ocultar historia</span>
             </button>
          }
         <button 
-            type="button" 
-            class="btn btn-sm  btn-aceptar btn-amplio d-flex align-items-center" 
+            class="btn btn-sm  btn-enlace btn-amplio" 
             routerLink="/programar">
             <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
             <span>Volver a listar épicas</span>
@@ -37,7 +33,7 @@
     </div> 
 </div>
 
-<div class="card-form" style="width: 75%;">
+<div class="card-form" style="width: 90%;">
     <div class="row">
         <div class="col-md-12">
             @if(mostrarHistoriaEpica){

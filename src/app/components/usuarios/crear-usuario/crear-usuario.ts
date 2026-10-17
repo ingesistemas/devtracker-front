@@ -73,7 +73,6 @@ export class CrearUsuario implements OnInit {
         this.usuarios =state?.datos;
       
         if (this.usuarios) {
-          console.log(this.usuarios)
           this.modoEdicion = true
           this.formulario.patchValue({
             id: this.usuarios.id,

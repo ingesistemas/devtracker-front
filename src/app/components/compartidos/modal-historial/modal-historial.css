@@ -1,0 +1,67 @@
+
+.modal-content{
+  width: 800px !important;
+  margin-left: -150px !important;
+}
+
+.modal-content{
+  margin-top: 200px  !important;
+}
+
+
+.mensaje{
+  font-size: 14px;
+}
+
+.subtitulo-modal-historial{
+  color: rgb(0, 111, 162);
+}
+
+/* Contenedor con scroll vertical y altura máxima */
+.table-container {
+  max-height: 400px; /* Puedes ajustar esta altura según lo necesites */
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+/* Estilos generales de la tabla */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+/* Cabecera fija para que no se oculte al hacer scroll */
+.table-container th {
+  position: sticky;
+  top: 0;
+  background-color: #f5f5f5;
+  color: #333;
+  z-index: 2;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Celdas del cuerpo */
+.table-container td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+/* Filas con colores intercalados (Efecto Zebra) */
+.table-container tbody tr:nth-child(even) {
+  background-color: #fafafa; /* Color sutil para filas pares */
+}
+
+.table-container tbody tr:nth-child(odd) {
+  background-color: #ffffff; /* Color blanco para filas impares */
+}
+
+/* Efecto hover al pasar el cursor por encima de las filas */
+.table-container tbody tr:hover {
+  background-color: #f1f5f9;
+}

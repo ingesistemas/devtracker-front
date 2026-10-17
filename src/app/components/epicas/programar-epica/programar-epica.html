@@ -118,14 +118,28 @@
         </div>
 
         <div class="mat-shadow-2 contiene-tabla">
-            <table mat-table [dataSource]="dataSource" matSort class="tabla">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows matSort class="tabla">
                 
                 <!-- <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
                     <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
                     [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> {{row.id}} </td>
                 </ng-container>
- -->
+                -->
+
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef aria-label="Acción desplegar" class="mat-column-expand">&nbsp;</th>
+                    <td mat-cell *matCellDef="let row" class="mat-column-expand">
+                        <button mat-icon-button 
+                                type="button"
+                                aria-label="desplegar tareas" 
+                                (click)="toggleFila(row); $event.stopPropagation()"
+                                class="btn-acciones">
+                            <mat-icon>{{ elementoExpandido === row ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="fecha">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> F. Registro </th>
                     <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
@@ -213,16 +227,92 @@
                                     <span><fa-icon [icon]="faPenToSquare" class="me-2"></fa-icon>Detalle tareas</span>
                                 </button>
 
-                                <button mat-menu-item class="opcion-menu" (click)="estado(row)">
-                                    <span><fa-icon [icon]="faEyeSlash" class="me-2"></fa-icon>Desactivar</span>
+                                <!-- <button mat-menu-item class="opcion-menu" (click)="estado(row)">
+                                    <span><fa-icon [icon]="faEyeSlash" class="me-2"></fa-icon>Archivar</span>
                                 </button>
+                                <button mat-menu-item class="opcion-menu" (click)="estado(row)">
+                                    <span><fa-icon [icon]="faEyeSlash" class="me-2"></fa-icon>Editar</span>
+                                </button>
+                                <button mat-menu-item class="opcion-menu" (click)="estado(row)">
+                                    <span><fa-icon [icon]="faEyeSlash" class="me-2"></fa-icon>Eliminar</span>
+                                </button> -->
                             }                        
                         </mat-menu>
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length" style="padding: 0 !important; border: 0 !important;">
+                        <div class="detalle-wrapper" [class.detalle-wrapper-expanded]="elementoExpandido === row">
+                            @if (elementoExpandido === row) {
+                                <div class="p-3 bg-light border-top w-100">
+                                    <h5 class="mb-4">Tareas y observaciones:</h5>
+                                    @if (row.tareas && row.tareas.length > 0) {
+                                        <ul class="list-group list-group-flush">
+                                            @for (tarea of row.tareas; track tarea.id; let even = $even) {
+                                                <li class="list-group-item p-3 mb-5 rounded" 
+                                                [ngClass]="even ? 'bg-light-li' : 'bg-white'">
+                                                    <div class="mb-3 border-bottom pb-2">
+                                                        <!-- Nombre de la Tarea -->
+                                                        
+                                                        <!--  <fa-icon [icon]="faSquareCheck" class="me-2"></fa-icon> -->
+                                                    
+                                                        <span class="nombreTarea texto-subrayado">{{ tarea.nombre }} [ {{ tarea.estado.estado }} ]</span> 
+
+                                                        <span class="subTitulo" [style.backgroundColor]="getPrioridadColorBage(tarea.id_complejidad)" 
+                                                        [style.color]="getPrioridadTextColor(tarea.id_complejidad)"
+                                                        class="badge rounded-pill">Complejidad: {{tarea.nom_complejidad}}
+                                                        </span>
+                                                        
+                                                        <span class="subTitulo" [style.backgroundColor]="getPrioridadColorBage(tarea.id_prioridad)"  
+                                                        [style.color]="getPrioridadTextColor(tarea.id_prioridad)"
+                                                        class="badge rounded-pill">Prioridad: {{tarea.nom_prioridad}} 
+                                                        </span>
+
+                                                        <span class="nombreCreo"> Creada por: {{ tarea.usuario_creo.nombre }} - {{ tarea.created_at | date:'dd/MM/yyyy':'UTC' }}</span>
+
+                                                        <!-- Bucle de Observaciones de ESTA tarea -->
+                                                        @if (tarea.observaciones && tarea.observaciones.length > 0) {
+                                                            <ul class="list-group list-group-flush mt-3 ms-3">
+                                                                @for (obs of tarea.observaciones; track obs.id) {
+                                                                    <li class="list-group-item bg-transparent mt-1">
+                                                                        <strong>{{ obs.creador?.nombre || 'Usuario' }}</strong> 
+                                                                        <small class="text-muted"> ({{ obs.created_at | date:'dd/MM/yyyy HH:mm' }})</small>: 
+                                                                        <br>
+                                                                        <span>{{ obs.observacion }}</span> 
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        } @else {
+                                                            <small class="text-muted ms-3 d-block">Sin observaciones.</small>
+                                                        }
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    } @else {
+                                        <span class="text-muted small">No hay tareas registradas para esta épica.</span>
+                                    }
+                                </div>
+                            }
+
+                        </div>
+                    </td>
+                </ng-container>
+
+      
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                 
+                <tr mat-row 
+                    *matRowDef="let row; columns: displayedColumns;" 
+                    class="fila-elemento" 
+                    [class.fila-expandida]="elementoExpandido === row"
+                    cdkDrag 
+                    [cdkDragData]="row">
+                </tr>
+                
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="fila-detalle"></tr>
+                
 
                 <tr class="mat-row" *matNoDataRow>
                     <td class="mat-cell" colspan="11">No se encontraron datos coincidentes.</td>

@@ -1,27 +1,30 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { PeticionServicio } from '../../../servicios/peticion-servicio';
-import { ModalCargandoServicio } from '../../../servicios/modal-cargando-servicio';
-import { ModalMensajeServicio } from '../../../servicios/modal-mensaje-servicio';
-import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
-import { MatButtonModule } from '@angular/material/button';
-import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { CommonModule } from '@angular/common';
-import { CdkOverlayOrigin, OverlayModule } from '@angular/cdk/overlay';
-import { IUsuario } from '../../../interfaces/iusuario';
-import { Popover } from "../../compartidos/popover/popover";
-import { IEpica } from '../../../interfaces/iepica';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatSelectModule } from '@angular/material/select'
+import { FormsModule } from '@angular/forms'
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
+import { MatSort, MatSortModule } from '@angular/material/sort'
+import { MatTableDataSource, MatTableModule } from '@angular/material/table'
+import { PeticionServicio } from '../../../servicios/peticion-servicio'
+import { ModalCargandoServicio } from '../../../servicios/modal-cargando-servicio'
+import { ModalMensajeServicio } from '../../../servicios/modal-mensaje-servicio'
+import { ToastrService } from 'ngx-toastr'
+import { Router } from '@angular/router'
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
+import { MatButtonModule } from '@angular/material/button'
+import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
+import { MatIconModule } from '@angular/material/icon'
+import { MatMenuModule } from '@angular/material/menu'
+import { CommonModule } from '@angular/common'
+import { CdkOverlayOrigin, OverlayModule } from '@angular/cdk/overlay'
+import { IUsuario } from '../../../interfaces/iusuario'
+import { Popover } from "../../compartidos/popover/popover"
+import { IEpica } from '../../../interfaces/iepica'
+import { DragDropModule } from '@angular/cdk/drag-drop'
+import { MatDialog } from '@angular/material/dialog';
+import { ModalConfirma } from '../../compartidos/modal-confirma/modal-confirma';
 
 @Component({
   selector: 'app-list-epics',
@@ -41,31 +44,41 @@ import { IEpica } from '../../../interfaces/iepica';
     MatIconModule, 
     CommonModule, 
     OverlayModule, 
-    Popover
+    Popover,
+    DragDropModule
   ],
   templateUrl: './listar-epicas.html',
   styleUrl: './listar-epicas.css',
 })
 export class ListarEpicas implements OnInit, AfterViewInit {
-  private peticionServicio = inject(PeticionServicio);
-  private modalCargandoServicio = inject(ModalCargandoServicio);
-  private modalMensajeServicio = inject(ModalMensajeServicio);
-  private toastrServicio = inject(ToastrService);
-  private router = inject(Router);
+  private peticionServicio = inject(PeticionServicio)
+  private modalCargandoServicio = inject(ModalCargandoServicio)
+  private modalMensajeServicio = inject(ModalMensajeServicio)
+  private toastrServicio = inject(ToastrService)
+  private router = inject(Router)
+  private dialogConfirm = inject(MatDialog);
 
-  faSquarePlus = faSquarePlus;
-  faPenToSquare = faPenToSquare;
-  faSquareCheck = faSquareCheck;
-  faEyeSlash = faEyeSlash;
-  faCircleQuestion = faCircleQuestion;
-  faBroom = faBroom;
+  elementoExpandido: any | null = null
 
-  epicas: IEpica[] = [];
+  toggleFila(row: any) {
+    this.elementoExpandido = this.elementoExpandido === row ? null : row
+  }
 
-  listaEstados: any[] = [];
-  listaUsuarios: IUsuario[] = [];
-  listaProyectos: any[] = [];
-  listaPrioridades: any[] = [];
+  faSquarePlus = faSquarePlus
+  faPenToSquare = faPenToSquare
+  faSquareCheck = faSquareCheck
+  faEyeSlash = faEyeSlash
+  faCircleQuestion = faCircleQuestion
+  faBroom = faBroom
+  faTrashCan = faTrashCan
+
+  epicas: IEpica[] = []
+
+  listaEstados: any[] = []
+  listaUsuarios: IUsuario[] = []
+  listaGrupoTrabajo: any[] = []
+  listaProyectos: any[] = []
+  listaPrioridades: any[] = []
   /* listaPrioridades = [
     { id: 1, nombre: 'Crítica' },
     { id: 2, nombre: 'Alta' },
@@ -79,9 +92,10 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   filtroPrioridad: (number | string)[] = [];
   filtroEstado: (number | string)[] = [];
   filtroUsuario: (number | string)[] = [];
+  filtroGrupoTrabajo: (number | string)[] = [];
 
   displayedColumns: string[] = [
-    'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
+    'expand', 'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
     'fpentrega', 'frentrega', 'estado', 'creadoPor', 'asignado', 'Opciones'
   ];
   
@@ -97,6 +111,26 @@ export class ListarEpicas implements OnInit, AfterViewInit {
       case 2: return '#c8e6c9';
       case 1: return '#f0f0f0';
       default: return 'transparent';
+    }
+  }
+
+  getPrioridadColorBage(idPrioridad: number): string {
+    switch (idPrioridad) {
+      case 4: return '#f2d3d5';
+      case 3: return '#f0f19a';
+      case 2: return '#b6ffb9';
+      case 1: return '#dcdcdc';
+      default: return 'transparent';
+    }
+  }
+
+  getPrioridadTextColor(idPrioridad: number): string {
+    switch (idPrioridad) {
+      case 4: return '#730202'; // Texto para fondo Crítica (#ffd8dc)
+      case 3: return '#040404'; // Texto para fondo Alta (#ffecce)
+      case 2: return '#005706'; // Texto para fondo Media (#c8e6c9)
+      case 1: return '#002356'; // Texto para fondo Baja (#f0f0f0)
+      default: return '#002356';
     }
   }
 
@@ -124,7 +158,7 @@ export class ListarEpicas implements OnInit, AfterViewInit {
         case 'proyecto':
           const proyecto = typeof item.proyecto === 'object' ? item.proyecto?.proyecto : item.proyecto;
           return proyecto ? proyecto.toLowerCase() : '';
-
+        
         case 'detalle':
           return item.detalle ? item.detalle.toLowerCase() : '';
 
@@ -210,6 +244,7 @@ export class ListarEpicas implements OnInit, AfterViewInit {
     this.peticionServicio.peticion('/epicas/consultar', null, 'GET')
     .subscribe({
       next: (resp) => {
+        console.log(resp)
         if (resp.error) {
           this.modalMensajeServicio.abrirModal({
             "tipo": "error",
@@ -219,7 +254,6 @@ export class ListarEpicas implements OnInit, AfterViewInit {
         } else {
           this.epicas = resp.datos || [];
           this.dataSource.data = [...this.epicas];
-          console.log(this.epicas)
           this.extraerCatalogosFiltros(this.epicas);
           this.aplicarFiltrosCombinados();
 
@@ -233,10 +267,11 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   }
 
   extraerCatalogosFiltros(data: IEpica[]) {
-    const estadosMap = new Map();
-    const usuariosMap = new Map();
-    const proyectosMap = new Map();
-    const prioridadesMap = new Map();
+    const estadosMap = new Map()
+    const usuariosMap = new Map()
+    const proyectosMap = new Map()
+    const prioridadesMap = new Map()
+    const gruposMap = new Map()
 
     data.forEach(item => {
       const idEstado = item.id_estado ?? (typeof item.estado === 'object' ? (item.estado as any)?.id : null);
@@ -267,10 +302,23 @@ export class ListarEpicas implements OnInit, AfterViewInit {
         const nom = typeof item.proyecto === 'object' ? (item.proyecto as any)?.proyecto : item.proyecto;
         proyectosMap.set(idProyecto, { id: idProyecto, proyecto: nom || `Proyecto ${idProyecto}` });
       }
+
+      // 1. Obtener el ID del grupo de forma segura
+      const idGrupo = item.usuario_asignado?.grupo_trabajo?.id
+        ?? (typeof item.usuario_asignado?.grupo_trabajo === 'object' ? (item.usuario_asignado.grupo_trabajo as any)?.id : null);
+
+      if (idGrupo != null && !gruposMap.has(idGrupo)) {
+        // 2. Extraer el nombre del grupo correctamente (apuntando a .grupo en lugar de .usuario_asignado)
+        const grupoObj = item.usuario_asignado?.grupo_trabajo;
+        const nom = typeof grupoObj === 'object' ? (grupoObj as any)?.grupo : grupoObj;
+        
+        gruposMap.set(idGrupo, { id: idGrupo, grupo: nom || `Grupo ${idGrupo}` });
+      }
     });
 
     this.listaEstados = Array.from(estadosMap.values());
     this.listaUsuarios = Array.from(usuariosMap.values());
+    this.listaGrupoTrabajo = Array.from(gruposMap.values());
     this.listaProyectos = Array.from(proyectosMap.values());
     this.listaPrioridades = Array.from(prioridadesMap.values());
   }
@@ -283,12 +331,13 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   }
 
   limpiarFiltros() {
-    this.filtroTexto = '';
-    this.filtroProyecto = [];
-    this.filtroPrioridad = [];
-    this.filtroEstado = [];
-    this.filtroUsuario = [];
-    this.aplicarFiltrosCombinados();
+    this.filtroTexto = ''
+    this.filtroProyecto = []
+    this.filtroPrioridad = []
+    this.filtroEstado = []
+    this.filtroUsuario = []
+    this.filtroGrupoTrabajo = []
+    this.aplicarFiltrosCombinados()
   }
 
   // Popover Overlay
@@ -333,75 +382,136 @@ export class ListarEpicas implements OnInit, AfterViewInit {
       }
     });
   }
-toggleTodosProyectos(event: any, select: any): void {
-  if (event.isUserInput) {
-    if (event.source.selected) {
-      select.options.forEach((item: any) => item.select());
-    } else {
-      select.options.forEach((item: any) => item.deselect());
+
+  eliminar(epica: IEpica){
+    if(epica.tareas && Object.keys(epica.tareas).length > 0){
+      this.modalMensajeServicio.abrirModal({
+        "tipo": "error",
+        "titulo": "Error:",
+        "mensaje": "No se puede eliminar la épica porque tiene tareas asociadas."
+      });
+      return
     }
-    this.aplicarFiltrosCombinados();
+    let mensaje = '¿Deseas eliminar la épica? Esta acción no se puede deshacer y el registro se eliminará del sistema. El proceso solo se completará si la épica no tiene registros relacionados.'
+       
+    this.dialogConfirm.open(ModalConfirma, {
+      width: '400px',
+      data: {
+        title: 'Confirmación',
+        message: mensaje,
+        confirmText: 'Sí',
+        cancelText: 'No'
+      }
+    }).afterClosed().subscribe(resultado => {
+      if (resultado) {
+        this.modalCargandoServicio.abrirModal(true);
+        this.peticionServicio.peticion('/epicas/eliminar', epica, 'POST')
+        .subscribe({
+          next: (resp) => {  
+            if (resp.error) {
+              this.modalMensajeServicio.abrirModal({
+                "tipo": "error",
+                "titulo": "Error:",
+                "mensaje": resp.mensaje
+              });
+            } else {
+              this.dataSource.data = this.dataSource.data.filter((item: any) => item.id !== epica.id);
+             /*  this.dataSource.data = [...this.dataSource.data]; */
+              this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
+            }
+          },
+          complete: () => {
+            this.modalCargandoServicio.abrirModal(false);
+          }
+        });
+      }
+    });
   }
-}
 
-toggleTodosPrioridades(event: any, select: any): void {
-  if (event.isUserInput) {
-    if (event.source.selected) {
-      select.options.forEach((item: any) => item.select());
-    } else {
-      select.options.forEach((item: any) => item.deselect());
+  toggleTodosProyectos(event: any, select: any): void {
+    if (event.isUserInput) {
+      if (event.source.selected) {
+        select.options.forEach((item: any) => item.select());
+      } else {
+        select.options.forEach((item: any) => item.deselect());
+      }
+      this.aplicarFiltrosCombinados();
     }
-    this.aplicarFiltrosCombinados();
   }
-}
 
-toggleTodosEstados(event: any, select: any): void {
-  if (event.isUserInput) {
-    if (event.source.selected) {
-      select.options.forEach((item: any) => item.select());
-    } else {
-      select.options.forEach((item: any) => item.deselect());
+  toggleTodosPrioridades(event: any, select: any): void {
+    if (event.isUserInput) {
+      if (event.source.selected) {
+        select.options.forEach((item: any) => item.select());
+      } else {
+        select.options.forEach((item: any) => item.deselect());
+      }
+      this.aplicarFiltrosCombinados();
     }
-    this.aplicarFiltrosCombinados();
   }
-}
 
-toggleTodosUsuarios(event: any, select: any): void {
-  if (event.isUserInput) {
-    if (event.source.selected) {
-      select.options.forEach((item: any) => item.select());
-    } else {
-      select.options.forEach((item: any) => item.deselect());
+  toggleTodosEstados(event: any, select: any): void {
+    if (event.isUserInput) {
+      if (event.source.selected) {
+        select.options.forEach((item: any) => item.select());
+      } else {
+        select.options.forEach((item: any) => item.deselect());
+      }
+      this.aplicarFiltrosCombinados();
     }
-    this.aplicarFiltrosCombinados();
   }
-}
 
-// Filtro ajustado para ignorar la opción con valor 0
-aplicarFiltrosCombinados(): void {
-  this.dataSource.filterPredicate = (data: any, filter: string) => {
-    const proySel = (this.filtroProyecto || []).filter(v => v !== 0);
-    const prioSel = (this.filtroPrioridad || []).filter(v => v !== 0);
-    const estSel = (this.filtroEstado || []).filter(v => v !== 0);
-    const usuSel = (this.filtroUsuario || []).filter(v => v !== 0);
+  toggleTodosUsuarios(event: any, select: any): void {
+    if (event.isUserInput) {
+      if (event.source.selected) {
+        select.options.forEach((item: any) => item.select());
+      } else {
+        select.options.forEach((item: any) => item.deselect());
+      }
+      this.aplicarFiltrosCombinados();
+    }
+  }
 
-    const cumpleProyecto = proySel.length === 0 || proySel.includes(data.id_proyecto);
-    const cumplePrioridad = prioSel.length === 0 || prioSel.includes(data.id_prioridad);
-    const cumpleEstado = estSel.length === 0 || estSel.includes(data.id_estado);
-    const cumpleUsuario = usuSel.length === 0 || usuSel.includes(data.usuario_asignado.id);
+  toggleTodosGruposTrabajo(event: any, select: any): void {
+    if (event.isUserInput) {
+      if (event.source.selected) {
+        select.options.forEach((item: any) => item.select());
+      } else {
+        select.options.forEach((item: any) => item.deselect());
+      }
+      this.aplicarFiltrosCombinados();
+    }
+  }
 
-    const busqueda = (this.filtroTexto || '').toLowerCase().trim();
-    const cumpleTexto = !busqueda || 
-      (data.usuario_asignado?.nombre && data.usuario_asignado.nombre.toLowerCase().includes(busqueda)) ||
-      (data.proyecto?.proyecto && data.proyecto.proyecto.toLowerCase().includes(busqueda)) ||
-      (data.nom_prioridad && data.nom_prioridad.toLowerCase().includes(busqueda)) ||
-      (data.estado?.estado && data.estado.estado.toLowerCase().includes(busqueda));
+  // Filtro ajustado para ignorar la opción con valor 0
+  aplicarFiltrosCombinados(): void {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const proySel = (this.filtroProyecto || []).filter(v => v !== 0);
+      const prioSel = (this.filtroPrioridad || []).filter(v => v !== 0);
+      const estSel = (this.filtroEstado || []).filter(v => v !== 0);
+      const usuSel = (this.filtroUsuario || []).filter(v => v !== 0);
+      const gruSel = (this.filtroGrupoTrabajo || []).filter(v => v !== 0);
+      
 
-    return cumpleProyecto && cumplePrioridad && cumpleEstado && cumpleUsuario && cumpleTexto;
-  };
+      const cumpleProyecto = proySel.length === 0 || proySel.includes(data.id_proyecto);
+      const cumplePrioridad = prioSel.length === 0 || prioSel.includes(data.id_prioridad);
+      const cumpleEstado = estSel.length === 0 || estSel.includes(data.id_estado);
+      const cumpleUsuario = usuSel.length === 0 || usuSel.includes(data.usuario_asignado.id);
+      const cumpleGrupoTrabajo = gruSel.length === 0 || gruSel.includes(data.usuario_asignado.grupo_trabajo.id);
+      
 
-  this.dataSource.filter = Math.random().toString();
-}
+      const busqueda = (this.filtroTexto || '').toLowerCase().trim();
+      const cumpleTexto = !busqueda || 
+        (data.usuario_asignado?.nombre && data.usuario_asignado.nombre.toLowerCase().includes(busqueda)) ||
+        (data.proyecto?.proyecto && data.proyecto.proyecto.toLowerCase().includes(busqueda)) ||
+        (data.nom_prioridad && data.nom_prioridad.toLowerCase().includes(busqueda)) ||
+        (data.nombre && data.nombre.toLowerCase().includes(busqueda));
+
+      return cumpleProyecto && cumplePrioridad && cumpleEstado && cumpleUsuario && cumpleGrupoTrabajo && cumpleTexto ;
+    };
+
+    this.dataSource.filter = Math.random().toString();
+  }
 
   crear(){
     this.router.navigateByUrl('/crear-epica');

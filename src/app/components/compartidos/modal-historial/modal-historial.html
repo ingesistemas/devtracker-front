@@ -1,0 +1,75 @@
+@if(data){
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header d-flex align-items-center justify-content-between">
+                    <div class="modal-title-wrapper">
+                        <h5 class="modal-title mb-0 subtitulo-modal-historial">
+                            Historial de Estados
+                             <span class="badge bg-light text-primary border ">Épica: {{ data?.epica?.nombre || data?.nombre }}</span>
+                            <span class="badge bg-light text-primary border">Tarea:  {{ data?.epica?.nombre || data?.tarea }} </span>
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="modal-body mensaje" style="white-space: pre-line;" >
+                    @if( historial.length == 0 ){
+                        No se encontraron historiales de estado para esta tarea.
+                    } @else{
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th mat-sort-header="name">Fecha</th>
+                                    <th mat-sort-header="calories">Estado inicial</th>
+                                    <th mat-sort-header="fat">Estado final</th>
+                                    <th mat-sort-header="carbs">Usuario</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @for (item of historial; track $index) {  
+                                    <tr>
+                                        <td>{{ item.created_at | date:'dd/MM/yyyy HH:mm':'UTC'  }}</td>
+                                        <td>{{ item.estado_inicial.estado }}</td>
+                                        @if(item.estado_final.id == 8 || item.estado_final.id == 4){
+                                            <td>{{ item.estado_final.estado }}
+                                               
+                                                    <span style="margin-left: 10px;" (click)="consultarHistorial(item)">
+                                                        <fa-icon [icon]="faMagnifyingGlass" class="ico-aprobar" 
+                                                        matTooltip="Aprobar la tarea."
+                                                        matTooltipClass="mi-tooltip-personalizado">
+                                                        </fa-icon>
+                                                    </span>
+                                                
+                                                
+                                            </td>
+                                        }@else{
+                                            
+                                            <td>{{ item.estado_final.estado }} </td>
+                                        }
+                                        
+                                        <td>{{ item.creador.nombre }}</td>
+                                    </tr>
+                                    
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    
+                </div>
+
+                <div class="modal-footer">
+                     <button type="button" class="btn btn-sm btn-cancelar" (click)="cerrar()"><fa-icon
+                    [icon]="faRotateLeft"></fa-icon> Cerrar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- fondo oscuro -->
+    <div class="modal-backdrop fade show" ></div>
+}

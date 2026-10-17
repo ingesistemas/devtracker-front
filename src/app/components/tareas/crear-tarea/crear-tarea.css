@@ -1,0 +1,32 @@
+.separador-titulo {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #025f91;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.titulo-tabla{
+    width: 80%;
+}
+
+.separador-titulo::before,
+.separador-titulo::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+}
+
+.separador-titulo:not(:empty)::before {
+  margin-right: .5em;
+}
+
+.separador-titulo:not(:empty)::after {
+  margin-left: .5em;
+}
+
+.btn{
+  width: 150px !important;
+}
+

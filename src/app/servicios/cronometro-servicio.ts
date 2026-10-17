@@ -1,94 +1,92 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal, OnDestroy } from '@angular/core';
 import { TareaCronometroServicio } from './tarea-cronometro-servicio';
 import { DatosFormServicio } from './datos-form-servicio';
 import { DatosServicio } from './datos-servicio';
+import { HttpClient } from '@angular/common/http';
+import { PeticionServicio } from './peticion-servicio';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CronometroServicio {
-  private _tarea = signal<any>(null);
-  private _horasCronometro = signal<any>(0);
-  private _minutosCronometro = signal<any>(0);
-  private _estadoActivo = signal<boolean>(false);
-  private _fec_ini = signal<any>(new Date());
-  private _tiempo = signal<number>(0);
-  private datosTemServicio = inject(DatosServicio)
-  
-  private tareaCronometroServicio = inject(TareaCronometroServicio);
-  horas: number = 0;
-  minutos: number = 0;
+export class CronometroServicio implements OnDestroy {
+  private _tiempoAcumulado = signal<number>(0);
+  private _horaActual = signal<number>(0);
+  private _minutoActual = signal<number>(0);
+  private _fechaActiva = signal<Date | null>(null);
 
-  tieneDatos = computed(() => {
-    const val = this._tarea(); 
-    if (val === null || val === undefined) return false;
-    if (typeof val === 'string') {
-      return val.trim().length > 0;
-    }
-    return Boolean(val);
-  });
+  private _intervalId: any = null;
+  readonly minutosTranscurridos = signal<number>(0);
+  private _id_tarea = signal<number>(0)
+  private datosServicio = inject(DatosServicio)
+  private peticionServicio = inject(PeticionServicio)
+  private tareaServicio = inject(TareaCronometroServicio)
 
-  horaActual = computed(() => this._horasCronometro() ?? 0);
-  minutoActual = computed(() => this._minutosCronometro() ?? 0);
-  //estadoActivo = computed(() => this._estadoActivo());
-  fecInicial = computed(() => this._fec_ini());
-  tiempoInicial = computed(() => this._tiempo());
+  tiempoAcumulado = computed(() => this._tiempoAcumulado());
+  horaActual = computed(() => this._horaActual());
+  minutoActual = computed(() => this._minutoActual());
+  idtarea = computed(() => this._id_tarea());
 
-  /* setEstadoActivo(){
-    this._estadoActivo.set(true);
-  } */
-
-  setActivo(fecha: any, tiempo: number){
-    if(fecha == null){
-      fecha = new Date()
-    }
-
-    if(tiempo == null){
-      tiempo = 0
-    }
-    this._fec_ini.set(fecha);
-    this._tiempo.set(tiempo);
+  setActualizarDatos(id_tarea: number, tiempo: number, fec_ini: any){
+    this._tiempoAcumulado.set(tiempo)
+    let horas = Math.floor(tiempo / 60) + this.horaActual()
+    let minutos = (tiempo % 60)
+    this._horaActual.set(horas)
+    this._minutoActual.set(minutos)
+    this._fechaActiva.set(fec_ini)
+    this._id_tarea.set(id_tarea)
   }
-  
-  setCronometro() {
-    let fechaHoraInicio = this.fecInicial();
-    let tiempo = this.tiempoInicial(); 
-    let tareaActiva = this.tareaCronometroServicio.tarea();
-    let minutosAcumulados = tiempo ?? 0;
 
-    if (tareaActiva === 'No tienes ninguna tarea activa'){
-      this._horasCronometro.set(0);
-      this._minutosCronometro.set(0);
+  setCronometro(){
+    const fechaInicio = this._fechaActiva();
+    const fecha = fechaInicio ? new Date(fechaInicio) : null;
+
+    // Validamos si la fecha existe y si es válida
+    if (!fecha || isNaN(fecha.getTime())) {
+      this._tiempoAcumulado.set(0);
+      this._horaActual.set(0);
+      this._minutoActual.set(0);
       return;
-    }
+    } 
 
-    if (fechaHoraInicio == null){  
-      let totalMinutos = minutosAcumulados;
-      this.horas = Math.floor(totalMinutos / 60);
-      this.minutos = totalMinutos % 60;
-    } else {
-      const fechaNormalizada = typeof fechaHoraInicio === 'string'
-        ? fechaHoraInicio.trim().replace(' ', 'T')
-        : fechaHoraInicio;
+    const ahora = new Date();
+    //const diferenciaMs = ahora.getTime() - fecha.getTime();
 
-      const fechaInicio = new Date(fechaNormalizada);
-      const ahora = new Date();
-      const transcurridoMs = ahora.getTime() - fechaInicio.getTime();
-      const transcurridoMin = Math.floor(transcurridoMs / 60000); // miliseg → minutos
-
-      let totalMinutos = minutosAcumulados + transcurridoMin;
-      this.horas = Math.floor(totalMinutos / 60);
-      this.minutos = totalMinutos % 60;
-    }
     
-    this._horasCronometro.set(this.horas);
-    this._minutosCronometro.set(this.minutos);
+    // Si diferenciaMs es negativa (ej. reloj del PC desfasado), aseguramos mínimo 0
+    let acumulado = this.tiempoAcumulado() +  1;
+    this._tiempoAcumulado.set(acumulado);
+    let hora = Math.floor(acumulado / 60);
+    this._horaActual.set(hora);
+    this._minutoActual.set(acumulado % 60);
+    this.minutosTranscurridos.update(min => min + 1);
+
+    if (this.minutosTranscurridos() == 2) {
+      this.hacerPeticionHttp();
+      this.minutosTranscurridos.set(0); // Reiniciamos el contador
+    }
+    clearInterval(this._intervalId);
   }
 
-  limpiarCronometro() {
-    this.horas = 0;
-    this.minutos = 0;
-    this._horasCronometro.set(0);
-    this._minutosCronometro.set(0);
+  hacerPeticionHttp() {
+    const tarea = this.tareaServicio.tarea()
+    const datos = {
+      id: this.idtarea(),
+      id_usuario: this.datosServicio.id(),
+      tarea: tarea
+    };
+   this.peticionServicio.peticion('/tareas/temporizador', datos, 'POST')
+    .subscribe({
+      next: (resp) => {
+        
+      }
+    })
+  }
+
+  restaurar(){
+
+  }
+
+  ngOnDestroy(){
+
   }
 }

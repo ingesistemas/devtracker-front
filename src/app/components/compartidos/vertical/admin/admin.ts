@@ -4,7 +4,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { faAward, faChartLine, faClipboardList, faPeopleCarryBox, faTimeline, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { Router, RouterLink } from "@angular/router";
-import { DatosServicio } from '../../../../servicios/datos-servicio';
+import { DatosTareasServicio } from '../../../../servicios/datos-tareas-servicio';
 
 @Component({
   selector: 'app-admin',
@@ -20,7 +20,8 @@ export class Admin {
   faChartLine = faChartLine;
   faPeopleCarryBox = faPeopleCarryBox;
   private router = inject(Router)
-  private datosTempServicio = inject(DatosServicio)
+  private datosTareaServicio = inject(DatosTareasServicio)
+  
 
   openBottomSheet(){}
 
@@ -30,5 +31,10 @@ export class Admin {
 
   programar(){
     this.router.navigate(['/programar/'] )
+  }
+
+  editarEstadoConsulta(id_esatado:number, nombre: string){
+    this.datosTareaServicio.setIdEstadoConsulta(id_esatado, nombre)
+    this.router.navigateByUrl("/listar-qa")
   }
 }

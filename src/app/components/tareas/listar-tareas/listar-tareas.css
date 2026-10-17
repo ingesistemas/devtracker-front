@@ -1,0 +1,132 @@
+.titulo-tabla, .contiene-filtros{
+    margin-top: 20px !important;
+    width: 100%;
+}
+
+button{
+    width: 150px;
+}
+
+.mat-column-descripcion {
+  width: 400px !important;
+  min-width: 400px !important;
+  max-width: 400px !important;
+}
+
+.toggle-compacto {
+  /* Reduce el tamaño al 80% (ajusta el valor entre 0.7 y 0.85 según tu preferencia) */
+  transform: scale(.7) !important;
+  
+  /* Mantiene la alineación centrada o ajustada dentro de la celda */
+  transform-origin: left center !important;
+  backface-visibility: hidden !important;
+  -webkit-font-smoothing: subpixel-antialiased !important;
+  will-change: transform !important;
+}
+
+
+
+
+/* 1. La fila de detalle no debe tener altura ni bordes cuando está colapsada */
+tr.fila-detalle {
+  height: 0 !important;
+}
+
+/* 2. Ocultar el padding predeterminado de la celda td que contiene el detalle */
+tr.fila-detalle td.mat-mdc-cell {
+  padding: 0 !important;
+  border-bottom-width: 0 !important;
+  max-width: 0 !important;
+}
+
+/* 3. Contenedor del detalle */
+.detalle-wrapper {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Fuerza a los elementos a acomodarse verticalmente */
+  width: 100%;
+  box-sizing: border-box;
+  height: 0;
+  transition: height 225ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  text-align: justify;
+  color: #d7660a;
+}
+
+.detalle-wrapper-expanded {
+  height: auto;
+}
+
+/* 4. Opcional: Evitar border desalineado en la fila principal cuando está expandida */
+tr.fila-elemento.fila-expandida td {
+  border-bottom-color: transparent !important;
+}
+
+/* Ajuste de columna expand súper compacta */
+.mat-column-expand {
+  width: 40px !important;
+  max-width: 40px !important;
+  min-width: 40px !important;
+  padding-left: 8px !important;
+  padding-right: 0px !important;
+  text-align: center;
+}
+
+/* Reducir el área táctil del botón para que no fuerce un tamaño mayor */
+.mat-column-expand .btn-acciones {
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  padding: 0 !important;
+}
+
+.mat-column-expand .btn-acciones mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.detalle-wrapper span, 
+.detalle-wrapper li, 
+.detalle-wrapper p {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+
+
+.ico-edit-obs{
+  font-weight: 100 !important;
+  color: rgb(0, 135, 142);
+   width: 50px;
+}
+
+.ico-delete-obs{
+  font-weight: 100 !important;
+  color: rgb(179, 1, 1);
+  width: 50px;
+}
+
+.estado{
+  background-color: #FFF !important;
+  color: #585858 !important ;
+}
+
+.estado option{
+  color: #585858 !important ;
+  font-size: 12px !important;
+}
+
+.texto-estado-rechazo {
+  color: #e40215 !important ; /* El color de letra que prefieras */
+  font-weight: bold;
+}
+
+.texto-estado-aprobado {
+    color: #027c00 !important; /* El color de letra que prefieras */
+    font-weight: bold;
+}
+
+.texto-estado-produccion {
+    color: #1e03b6 !important; /* El color de letra que prefieras */
+    font-weight: bold;
+}
