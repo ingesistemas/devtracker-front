@@ -1,5 +1,5 @@
 <div class="titulo-tabla">
-  <h3>{{ titulo }}</h3>
+  <h4>{{ titulo }}</h4>
      <div class="contieneBotones d-flex ms-auto justify-content-end gap-2">
         @if(!mostrarFormularioTareas){
             <button 
@@ -28,7 +28,7 @@
             class="btn btn-sm  btn-enlace btn-amplio" 
             routerLink="/programar">
             <fa-icon [icon]="faRotateLeft" class="me-2"></fa-icon>
-            <span>Volver a listar épicas</span>
+            <span>Volver a requerimientos</span>
         </button>
     </div> 
 </div>
@@ -64,13 +64,6 @@
                     </div>
                 </div>
             }
-       
-            <!-- <label class="form-label">Detalle de la tarea seleccionada</label>
-            <textarea 
-                class="form-control form-control-sm mInput"
-                formControlName="detalle"
-                rows="20">
-            </textarea> -->
         </div>
         
         <div class="col-md-12">

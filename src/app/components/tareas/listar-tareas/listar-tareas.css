@@ -94,17 +94,7 @@ tr.fila-elemento.fila-expandida td {
 }
 
 
-.ico-edit-obs{
-  font-weight: 100 !important;
-  color: rgb(0, 135, 142);
-   width: 50px;
-}
 
-.ico-delete-obs{
-  font-weight: 100 !important;
-  color: rgb(179, 1, 1);
-  width: 50px;
-}
 
 .estado{
   background-color: #FFF !important;
@@ -129,4 +119,14 @@ tr.fila-elemento.fila-expandida td {
 .texto-estado-produccion {
     color: #1e03b6 !important; /* El color de letra que prefieras */
     font-weight: bold;
+}
+
+option:disabled {
+  background-color: #f3f4f6; 
+  background-color: #ebebec;
+  font-style: italic;    
+}
+
+.opcion_estado{
+  color: #1e03b6 !important;
 }

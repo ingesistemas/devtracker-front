@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
-import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faClock, faBinoculars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -26,6 +26,8 @@ import { DatosServicio } from '../../../servicios/datos-servicio';
 import { DatosFormServicio } from '../../../servicios/datos-form-servicio';
 import { DatosTareasServicio } from '../../../servicios/datos-tareas-servicio';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ModalHistorialServicio } from '../../../servicios/modal-historial-servicio';
+import { ITarea } from '../../../interfaces/itarea';
 
 
 @Component({
@@ -60,6 +62,8 @@ export class ProgramarEpica {
   private datosTempServicio = inject(DatosServicio)
   private datosFormServicio = inject(DatosFormServicio)
   private datosTareasServicio = inject(DatosTareasServicio)
+  private modalHistorialServicio = inject(ModalHistorialServicio)
+
 
   elementoExpandido: any | null = null;
 
@@ -67,13 +71,14 @@ export class ProgramarEpica {
     this.elementoExpandido = this.elementoExpandido === row ? null : row;
   }
 
-  faSquarePlus = faSquarePlus;
-  faPenToSquare = faPenToSquare;
-  faSquareCheck = faSquareCheck;
-  faEyeSlash = faEyeSlash;
-  faCircleQuestion = faCircleQuestion;
-  faBroom = faBroom;
-  faClock = faClock;
+  faSquarePlus = faSquarePlus
+  faPenToSquare = faPenToSquare
+  faSquareCheck = faSquareCheck
+  faEyeSlash = faEyeSlash
+  faCircleQuestion = faCircleQuestion
+  faBroom = faBroom
+  faClock = faClock
+  faBinoculars = faBinoculars
 
   epicas: IEpica[] = [];
 
@@ -209,6 +214,7 @@ export class ProgramarEpica {
     this.peticionServicio.peticion(`/epicas/programar/${id}`, null, 'GET')
     .subscribe({
       next: (resp) => {
+        console.log(resp)
         if (resp.error) {
           this.modalMensajeServicio.abrirModal({
             "tipo": "error",
@@ -218,7 +224,6 @@ export class ProgramarEpica {
         } else {
           this.epicas = resp.datos || [];
           this.dataSource.data = this.epicas;
-          console.log(this.epicas)
           this.extraerCatalogosFiltros(this.epicas);
           this.aplicarFiltrosCombinados();
 
@@ -415,15 +420,32 @@ aplicarFiltrosCombinados(): void {
     });
   }
 
-  //isPopoverOpen = false;
+  getMaxFechaEntrega(tareas: any[]): string | null {
+    if (!tareas || tareas.length === 0) return null;
 
-  /* abrirPopover(): void {
-    this.isPopoverOpen = true;
-  } */
+    // Compara las fechas string (formato ISO YYYY-MM-DDTHH:mm:ss...) para encontrar la mayor
+    return tareas.reduce((max, tarea) => {
+      return (!max || tarea.f_pentrega > max) ? tarea.f_pentrega : max;
+    }, null);
+  }
 
-  /* cerrarPopover(): void {
-    setTimeout(() => {
-      this.isPopoverOpen = false;
-    }, 150);
-  } */
+  getTotalHoras(tareas: any[]): number | null {
+    if (!tareas || tareas.length === 0) return null;
+    let total: number = 0
+    tareas.forEach(element => {
+      total = total + element.hrs_estimadas
+    });
+    return total
+  }
+
+   modalHistorial(tarea: ITarea, nombreEpica: string){    
+    console.log(tarea)
+    const tareaConEpica = {
+      ...tarea,
+      ruta_origen: "/crear-programa-epica",
+      tarea: tarea.nombre,
+      epica: nombreEpica
+    }
+     this.modalHistorialServicio.abrirModal(tareaConEpica)
+  }
 }

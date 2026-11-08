@@ -21,6 +21,9 @@ import { ToastrService } from 'ngx-toastr';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IUsuario } from '../../../interfaces/iusuario';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatListModule } from '@angular/material/list';
+import { IRequisito } from '../../../interfaces/irequisito';
+import { faRectangleList } from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-crear-tarea',
@@ -31,13 +34,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatIconModule,
     ReactiveFormsModule,
     MatSelectModule,
-    MatSlideToggleModule],
+    MatSlideToggleModule,
+    MatListModule],
   templateUrl: './crear-tarea.html',
   styleUrl: './crear-tarea.css',
 })
 export class CrearTarea {
   faRotateLeft = faRotateLeft;
   faCheck = faCheck
+  faRectangleList = faRectangleList
   @Input() isVisible: boolean = false;
   @Input() mensaje: string = '';
   url: string = ''
@@ -55,6 +60,8 @@ export class CrearTarea {
   edicion: boolean = false;
   observa: boolean = false;
   editarObs: boolean = false;
+  mostrarFormTarea: boolean = true
+  tituloRequisitos: string = "Mostrar requisitos"
  /*  edicion = toSignal(this.modalFormularioTareaServicio.edicion$);
   data = toSignal(this.modalFormularioTareaServicio.modalState$); */
   datos: any = []
@@ -63,8 +70,17 @@ export class CrearTarea {
   usuariosGrupo: any = []
   usuario: IUsuario[] = []
   usuarioActual: string = ""
+  requisitos: any[] = [];
+  idTareaCreada: number = 0
+  gurdado: boolean = false
 
   tituloFormulario: string = ""
+
+  formularioRequisito = this.fb.group({
+    id: [0],
+    id_tarea: [0],
+    id_requisito: [0],
+  })
 
   formularioTareas = this.fb.group({
     id: [0],
@@ -82,7 +98,8 @@ export class CrearTarea {
     cronometro: [0],
     nom_reasig:  [''],
     id_grupo:  [0],
-    calidad: ['', [Validators.required]]
+    calidad: ['', [Validators.required]],
+    hrs_estimadas: [0, [Validators.min(1)]]
   });
 
   constructor() {
@@ -113,13 +130,21 @@ export class CrearTarea {
 
   ngOnInit() {
     this.consultarGrupos()  
+    let epica = this.datosFormServicio.datos()
+    let datos = {"id_epica": epica.id}
+    this.peticionServicio.peticion('/requisitos/consultar', datos, 'POST').subscribe(
+      {
+        next: (req)=>{
+          this.requisitos = req.datos
+        }
+      }
+    )
   }
 
   poblarCampos(){
     const state = globalThis?.history?.state;  
     this.observa = state?.observa;
     this.datos = state?.datos;
-    console.log(this.datos)
     if(this.datos != null){
       this.edicion = true
       const fechaFormateada = this.datos.f_pentrega ? this.datos.f_pentrega.split('T')[0] : null;
@@ -132,26 +157,30 @@ export class CrearTarea {
         id_prioridad:  this.datos.id_prioridad,
         id_complejidad:  this.datos.id_complejidad,
         id_reasig: this.datos.usuario_asignado.id,
-        cronometro: this.datos.cronometro
+        cronometro: this.datos.cronometro,
+        calidad: this.datos.calidad,
+        hrs_estimadas: this.datos.hrs_estimadas
       });
+      this.idTareaCreada = this.datos.id
       this.usuarioActual = this.datos.usuario_asignado.nombre
       if(this.observa){
         this.formularioTareas.disable();
-        this.tituloFormulario = "Crear observación"
+        let nombreEpica = this.datosFormServicio.datos()
+        this.tituloFormulario = "Crear observación Tarea: " 
+        this.formularioTareas.controls['observacion'].enable()
         
-        if(state?.datosObservacion != null){
+        if(state?.datosObservacion){
           this.editarObs = true
-          this.tituloFormulario = "Editar observación"
+          this.tituloFormulario = "Editar observación Tarea: " 
           let obs = state?.datosObservacion.observacion
           let id_obs = state?.datosObservacion.id
           this.formularioTareas.controls['observacion'].setValue(obs)
           this.formularioTareas.controls['id_observacion'].setValue(id_obs)
-          
-        }
-       
-        this.formularioTareas.controls['observacion'].enable()
+        }   
+        
       } else {
-        this.tituloFormulario = "Editar tarea"
+        let nombreEpica = this.datosFormServicio.datos()
+        this.tituloFormulario = "Editar tarea Épica: " + nombreEpica.nombre 
         this.formularioTareas.controls['observacion'].disable()
       }
     } else {
@@ -164,7 +193,9 @@ export class CrearTarea {
         id_complejidad: null,
         cronometro: 0
       });
-      this.tituloFormulario = "Crear tarea"
+      let nombreEpica = this.datosFormServicio.datos()
+      this.tituloFormulario = "Crear tarea Épica: " + nombreEpica.nombre 
+      this.formularioTareas.controls['observacion'].disable()
     }
    
     this.filtrarUsuarios()
@@ -278,7 +309,6 @@ export class CrearTarea {
    
     this.modalCargandoServicio.abrirModal(true);
     let datos = (this as any)[formulario].getRawValue();
-     console.log(datos)
     let form = (this as any)[formulario];
     if (form.invalid) {
       form.markAllAsTouched();
@@ -348,9 +378,11 @@ export class CrearTarea {
           } else {
               this.datosTareas.actualizarDatosForm(nuevaTareaCompleta);
           }
-          this.formularioTareas.reset()
+          this.idTareaCreada =  resp.data.id
           this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
-          this.cerrar()          
+          this.mostrarFormTarea = false
+          this.tituloRequisitos = "Ocultar requisitos"
+          this.gurdado = true
         }
       },
       error: (error) => {
@@ -364,5 +396,63 @@ export class CrearTarea {
         this.modalCargandoServicio.abrirModal(false);
       }
     }); 
+  }
+
+  cambiaMostrarFormTarea(){
+    this.mostrarFormTarea = !this.mostrarFormTarea
+    if(this.mostrarFormTarea){
+      this.tituloRequisitos = "Mostrar requisitos"
+    }else{
+      this.tituloRequisitos = "Ocultar requisitos"
+    }
+    
+  }
+
+  requisito(event: any, requisito: IRequisito){
+    const estaMarcado = event.target.checked;
+    let url = "";
+
+    if (estaMarcado) {
+        url = "/requisitos/agregar-tarea";
+    } else {
+        url = "/requisitos/eliminar-tarea";
+    }
+   
+    // Buscamos y actualizamos directamente el requisito
+    const itemEncontrado = this.requisitos.find(el => el.id === requisito.id);
+    if (itemEncontrado) {
+        itemEncontrado.checked_id = estaMarcado; // Usa 'checked' (o 'checked_id' si prefieres, pero manténlo igual en el HTML)
+    }
+    let datosRequisitos = {
+      id_requisito: requisito.id,
+      id_tarea: this.idTareaCreada
+    }
+    this.peticionServicio.peticion(url, datosRequisitos, "POST")
+    .subscribe({
+      next: (res)=>{
+        if(res.error){
+          this.modalMensajeServicio.abrirModal({
+            tipo: "error",
+            titulo: "Error:",
+            mensaje: res.mensaje
+          });         
+        }else{
+           this.toastrServicio.success(res.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
+        }
+        
+      },
+      error: (error)=>{
+        this.modalMensajeServicio.abrirModal({
+          tipo: "error",
+          titulo: "Error:",
+          mensaje: error.error?.message ?? error.error?.mensaje ?? error.message ?? 'Se presentó un error en el servidor.'
+        });
+      }
+    })
+  }
+
+  isRequisitoChecked(itemId: number): boolean {
+
+    return this.datos?.requisito_tareas?.some((rt: any) => rt.id_requisito === itemId) ?? false;  
   }
 }

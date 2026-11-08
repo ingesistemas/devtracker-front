@@ -34,7 +34,7 @@
 }
 
 .tareaActiva{
-   /*  background-color: #004e81; */
+    width: auto;
     background-color: #00bf96;
     color: #FFF;
 }

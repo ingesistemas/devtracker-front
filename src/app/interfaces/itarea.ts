@@ -29,4 +29,5 @@ export interface ITarea {
   nom_complejidad: string;
   ruta_origen: string;
   observaciones: Iobservacion[];
+  requisito_tareas: any[];
 }

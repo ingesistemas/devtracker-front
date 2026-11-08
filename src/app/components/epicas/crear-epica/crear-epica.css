@@ -10,4 +10,10 @@ button{
   min-height: 250px !important;
 }
 
+.ico-edit-obs, .ico-delete-obs{
+    width: 50px !important;
+    font-size: 12px !important;
+}
+
+
 

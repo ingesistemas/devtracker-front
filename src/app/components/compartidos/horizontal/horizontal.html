@@ -23,8 +23,11 @@
                                 [ngClass]="{
                                 'sinTareaActiva': tareaActual() === 'No tienes ninguna tarea activa',
                                 'tareaActiva': tareaActual() !== 'No tienes ninguna tarea activa'}">
-                                <span class="text-truncate" style="max-width: 300px; ">
-                                    {{ tareaActual() }} - {{ horas() }}Hrs : {{ minutos() }}Min
+                                <span class="text-truncate" style="max-width: 900px; ">
+                                    {{ tareaActual() }}
+                                </span>
+                                 <span class="text-truncate" >
+                                    {{ horas() }}Hrs : {{ minutos() }}Min
                                 </span>
                             </span>
                         </li>

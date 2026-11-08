@@ -79,7 +79,6 @@ export class CrearProgramaEpica {
   usuarios!: any
   modoEdicion = false
   url: string = ''
-  titulo: string = 'Generar cronograma de la Épica'
   archivoPdf: File | null = null
   archivoPdfNombre: string = ''
   archivoVideoNombre: string = ''
@@ -87,59 +86,59 @@ export class CrearProgramaEpica {
 
   public Editor: any = ClassicEditor
   public editorConfig = {
-  licenseKey: 'GPL',
-  plugins: [
-    Essentials,
-    Paragraph,
-    Heading,
-    Bold,
-    Italic,
-    FontColor,
-    FontBackgroundColor,
-    List,
-    Link,
-    BlockQuote,
-    FileRepository,
-    Image,          
-    ImageToolbar,  
-    ImageUpload,
-    ImageResize, // <-- Importar
-    ImageStyle
-  ],
-  toolbar: [
-    'undo', 'redo', '|',
-    'heading', '|',
-    'bold', 'italic', '|',
-    'fontColor', 'fontBackgroundColor', '|',
-    'bulletedList', 'numberedList', '|',
-    'link', 'blockQuote', 'insertImage', 'ImageResize', 
-    'ImageStyle'
-  ],
-  image: {
+    licenseKey: 'GPL',
+    plugins: [
+      Essentials,
+      Paragraph,
+      Heading,
+      Bold,
+      Italic,
+      FontColor,
+      FontBackgroundColor,
+      List,
+      Link,
+      BlockQuote,
+      FileRepository,
+      Image,          
+      ImageToolbar,  
+      ImageUpload,
+      ImageResize, // <-- Importar
+      ImageStyle
+    ],
     toolbar: [
-      'imageStyle:inline',
-      'imageStyle:block',
-      'imageStyle:side',
-      '|',
-      'resizeImage'
-    ]
-  },
-  link: {
-    defaultProtocol: 'https://',
-    addTargetToExternalLinks: true,
-    decorators: {
-      openInNewTab: {
-        mode: 'manual' as const, // <-- 'as const' resuelve la incompatibilidad de tipo
-        label: 'Abrir en nueva pestaña',
-        attributes: {
-          target: '_blank',
-          rel: 'noopener noreferrer'
+      'undo', 'redo', '|',
+      'heading', '|',
+      'bold', 'italic', '|',
+      'fontColor', 'fontBackgroundColor', '|',
+      'bulletedList', 'numberedList', '|',
+      'link', 'blockQuote', 'insertImage', 'ImageResize', 
+      'ImageStyle'
+    ],
+    image: {
+      toolbar: [
+        'imageStyle:inline',
+        'imageStyle:block',
+        'imageStyle:side',
+        '|',
+        'resizeImage'
+      ]
+    },
+    link: {
+      defaultProtocol: 'https://',
+      addTargetToExternalLinks: true,
+      decorators: {
+        openInNewTab: {
+          mode: 'manual' as const, // <-- 'as const' resuelve la incompatibilidad de tipo
+          label: 'Abrir en nueva pestaña',
+          attributes: {
+            target: '_blank',
+            rel: 'noopener noreferrer'
+          }
         }
       }
-    }
-  },
-  extraPlugins: [CustomUploadAdapterPlugin]
-};
+    },
+    extraPlugins: [CustomUploadAdapterPlugin]
+  };
 
   private fb = inject(FormBuilder)
   private toastrServicio = inject(ToastrService)
@@ -157,6 +156,8 @@ export class CrearProgramaEpica {
   activarAceptar: boolean = false
   mostrarFormularioTareas: boolean = false
   mostrarHistoriaEpica: boolean = false
+  nombreEpica = this.datosFormServicio.datos()
+   titulo: string = 'Tareas Épica: ' + ' ' + this.nombreEpica.nombre
 
   formulario = this.fb.group({
     id: [0],

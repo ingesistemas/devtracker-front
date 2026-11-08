@@ -548,3 +548,50 @@ mat-slide-toggle {
   transform: scale(0.8);
   transform-origin: left center; /* Asegura que se reduzca hacia la izquierda y no se mueva raro */
 }
+
+
+
+/* 1. Selecciona tu barra personalizada de forma global */
+mat-progress-bar.custom-progress {
+  height: 12px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+
+mat-progress-bar.custom-progress .mdc-linear-progress__bar-inner {
+    border: none;
+    
+    background: linear-gradient(
+    135deg,
+    rgb(255, 255, 255) 0%,
+    rgb(188, 243, 251) 15%,
+    rgb(156, 242, 255) 30%,
+    rgb(113, 219, 235) 45%,
+    rgb(62, 214, 238) 60%,
+    rgb(20, 184, 209) 80%,
+    rgb(0, 179, 206) 100%
+    ); 
+    box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.8), inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+     backdrop-filter: blur(8px);
+    border-radius: 6px;
+    height: 5px !important;
+
+}
+
+/* 3. Modifica el color y la altura de la pista (el fondo) */
+mat-progress-bar.custom-progress .mdc-linear-progress__track {
+  background-color: #e2e8f0 !important; /* Cambia aquí el color del fondo */
+  height: 5px !important;
+}
+
+mat-progress-bar.custom-progress .mdc-linear-progress__bar {
+  height: 5px !important;
+}
+
+input.form-check-input:checked:disabled {
+    background-color: #a9b1b3 !important; /* Tu color cian */
+    border-color: #a9b1b3 !important;
+    opacity: 1 !important; /* Evita que Bootstrap lo ponga semitransparente */
+}
+

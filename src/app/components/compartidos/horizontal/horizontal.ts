@@ -45,6 +45,7 @@ export class Horizontal  {
     /* this.tareaCronometroServicio.setTarea('')
         this.datosTempServicio.setTareaActiva(0, fecha, 0)
         this.cronometroServicio.setActualizarDatos(0, 0, fecha) */
+        this.cronometroServicio.restaurar()
         this.modalCargandoServicio.abrirModal(true)
         this.datosTempServicio.clear()
         setTimeout(()=>{

@@ -21,6 +21,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { IProyecto } from '../../../interfaces/iproyecto';
 import { Image, ImageToolbar, ImageUpload, FileRepository, FontBackgroundColor, FontColor, ClassicEditor, Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, ImageResize, ImageStyle } from 'ckeditor5';
 import { DatosFormServicio } from '../../../servicios/datos-form-servicio';
+import { MatListModule } from '@angular/material/list';
+import { faPenToSquare, faRectangleList } from '@fortawesome/free-regular-svg-icons';
 
 // Adaptador para convertir imágenes pegadas o subidas a Base64
 class CustomBase64Adapter {
@@ -61,7 +63,8 @@ function CustomUploadAdapterPlugin(editor: any) {
     MatIconModule, 
     ReactiveFormsModule, 
     RouterLink, 
-    MatSelectModule],
+    MatSelectModule,
+    MatListModule],
   templateUrl: './describir-programa-epica.html',
   styleUrl: './describir-programa-epica.css',
 })
@@ -70,6 +73,8 @@ export class DescribirProgramaEpica {
   faCircleCheck = faCircleCheck;
   faRotateLeft = faRotateLeft;
   faFileCirclePlus = faFileCirclePlus
+  faPenToSquare = faPenToSquare
+  faRectangleList = faRectangleList
   mostrarMensaje: boolean = false;
   mensaje: string = "";
   proyectos: IProyecto[] = [];
@@ -149,6 +154,10 @@ export class DescribirProgramaEpica {
   private authService = inject(AuthServiceTs);
   private router = inject(Router);
   private datosTempServicio = inject(DatosFormServicio);
+  mostrarCrearEpica: boolean = true
+  tituloRequisitos: string = "Mostrar requisitos"
+
+  requisitos: any[] = []
  
   formulario = this.fb.group({
     id: [0],
@@ -178,7 +187,7 @@ export class DescribirProgramaEpica {
       this.epicas = state?.datos;
     }
     if (this.epicas) {
-     
+      this.requisitos = this.epicas.requisitos
       this.modoEdicion = true;
       this.formulario.patchValue({
         id: this.epicas.id,
@@ -194,168 +203,15 @@ export class DescribirProgramaEpica {
         this.archivoPdfNombre = this.epicas.ruta_pdf.split('/').pop() ?? 'Archivo adjunto';
       }
     } 
-    this.modalCargandoServicio.abrirModal(false);
-    /* forkJoin({
-      proyectos: this.peticionServicio.peticion('/proyectos/consultar', null, 'GET'),
-      usuarios: this.peticionServicio.peticion('/usuarios/consultar', null, 'GET')
-    }).subscribe({
-      next: (resp: any) => {
-        if (resp.proyectos.error) {
-          this.modalMensajeServicio.abrirModal({
-            tipo: 'error',
-            titulo: 'Error:',
-            mensaje: resp.proyectos.mensaje
-          });
-          return;
-        }
-
-        if (resp.usuarios.error) {
-          this.modalMensajeServicio.abrirModal({
-            tipo: 'error',
-            titulo: 'Error:',
-            mensaje: resp.usuarios.mensaje
-          });
-          return;
-        }
-
-        this.proyectos = resp.proyectos.datos;
-        this.usuarios = resp.usuarios.datos;
-
-        const state = globalThis?.history?.state;
-        this.epicas = state?.datos;
-        
-        if (this.epicas) {
-          this.modoEdicion = true;
-          this.formulario.patchValue({
-            id: this.epicas.id,
-            nombre: this.epicas.nombre,
-            detalle: this.epicas.detalle ?? '',
-            id_proyecto: this.epicas.proyecto?.id ?? null,
-            id_usu_asig: this.epicas.usuario_asignado?.id ?? null,
-            id_prioridad: this.epicas.id_prioridad ?? null
-          });
-
-          if (this.epicas.ruta_pdf) {
-            this.archivoPdfNombre = this.epicas.ruta_pdf.split('/').pop() ?? 'Archivo adjunto';
-          }
-        } 
-      },
-      error: (error) => {
-        this.modalMensajeServicio.abrirModal({
-          tipo: 'error',
-          titulo: 'Error:',
-          mensaje: 'Ocurrió un error al cargar la información inicial.'
-        });
-        this.modalCargandoServicio.abrirModal(false);
-      },
-      complete: () => {
-        this.modalCargandoServicio.abrirModal(false);
-      }
-    }); */
+    this.modalCargandoServicio.abrirModal(false); 
   }
 
-  /* validar(campo: string) {
-    const control = this.formulario.get(campo);
-    if (control && (control.touched || control.dirty) && control.invalid) {
-      return this.obtenerErrorServicio.getErrores(this.formulario, campo);
+  cambiaMostrarFormTarea(){
+    this.mostrarCrearEpica = !this.mostrarCrearEpica
+    if(this.mostrarCrearEpica){
+      this.tituloRequisitos = "Mostrar requisitos"
+    }else{
+      this.tituloRequisitos = "Ocultar requisitos"
     }
-    return null;
-  } */
-
-  /* aceptar() {
-    this.modalCargandoServicio.abrirModal(true);
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      this.modalCargandoServicio.abrirModal(false);
-      this.modalMensajeServicio.abrirModal({
-        mensaje: "Se presentaron errores al validar los datos. Favor verificar.",
-        titulo: "Error:",
-        tipo: "error"
-      });
-      return;
-    }
-
-    // Construir el FormData para soportar archivos
-    const formData = new FormData();
-    const formValues = this.formulario.value;
-
-    Object.keys(formValues).forEach(key => {
-      const value = formValues[key as keyof typeof formValues];
-      if (value !== null && value !== undefined && key !== 'archivo_pdf' && key !== 'archivo_video') {
-        formData.append(key, value.toString());
-      }
-    });
-
-    // Adjuntar PDF si se seleccionó uno
-    if (this.archivoPdf) {
-      formData.append('archivo_pdf', this.archivoPdf, this.archivoPdf.name);
-    }
-
-    // Adjuntar Video si se seleccionó uno (usando la variable de clase)
-    if (this.archivoVideo) {
-      formData.append('archivo_video', this.archivoVideo, this.archivoVideo.name);
-    }
-
-    this.peticionServicio.peticion(this.url, formData, 'POST')
-    .subscribe({
-      next: (resp) => {
-        let mensajes = "";
-        if (resp.error) {
-          if (resp.errores) {
-            mensajes = Object.values(resp.errores)
-              .flat()
-              .join('\n');
-          } else {
-            mensajes = resp.mensaje;
-          }
-          
-          this.modalMensajeServicio.abrirModal({
-            tipo: "error",
-            titulo: "Error:",
-            mensaje: mensajes
-          });
-        } else {
-          this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
-          setTimeout(() => {
-            this.router.navigateByUrl("/epicas");
-          }, 1000);
-        }
-      },
-      error: (error) => {
-        this.modalMensajeServicio.abrirModal({
-          tipo: "error",
-          titulo: "Error:",
-          mensaje: error.error?.message ?? error.error?.mensaje ?? error.message ?? 'Se presentó un error en el servidor.'
-        });
-        this.modalCargandoServicio.abrirModal(false);
-      },
-      complete: () => {
-        this.modalCargandoServicio.abrirModal(false);
-      }
-    }); 
-  } */
-
-  // Capturar el archivo al seleccionar
-  /* onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.archivoPdf = input.files[0];
-      this.archivoPdfNombre = this.archivoPdf.name;
-      this.formulario.patchValue({ archivo_pdf: this.archivoPdf });
-    }
-  } */
-
-  /* onVideoSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    
-    if (input.files && input.files.length > 0) {
-      this.archivoVideo = input.files[0]; // <-- Asegurar que se asigna aquí
-      this.archivoVideoNombre = this.archivoVideo.name;
-
-      this.formulario.patchValue({
-        archivo_video: this.archivoVideo
-      });
-    }
-  }   */
-
+  }
 }

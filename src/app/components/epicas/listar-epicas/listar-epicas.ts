@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr'
 import { Router } from '@angular/router'
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 import { MatButtonModule } from '@angular/material/button'
-import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faTrashCan, faFilter, faBinoculars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { MatIconModule } from '@angular/material/icon'
 import { MatMenuModule } from '@angular/material/menu'
@@ -25,6 +25,12 @@ import { IEpica } from '../../../interfaces/iepica'
 import { DragDropModule } from '@angular/cdk/drag-drop'
 import { MatDialog } from '@angular/material/dialog';
 import { ModalConfirma } from '../../compartidos/modal-confirma/modal-confirma';
+import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
+import { faCode } from '@fortawesome/free-solid-svg-icons/faCode';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ITarea } from '../../../interfaces/itarea';
+import { ModalHistorialServicio } from '../../../servicios/modal-historial-servicio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-list-epics',
@@ -45,7 +51,9 @@ import { ModalConfirma } from '../../compartidos/modal-confirma/modal-confirma';
     CommonModule, 
     OverlayModule, 
     Popover,
-    DragDropModule
+    DragDropModule,
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   templateUrl: './listar-epicas.html',
   styleUrl: './listar-epicas.css',
@@ -57,11 +65,17 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   private toastrServicio = inject(ToastrService)
   private router = inject(Router)
   private dialogConfirm = inject(MatDialog);
+  private modalHistorialServicio = inject(ModalHistorialServicio)
 
   elementoExpandido: any | null = null
+  requiExpandido: any | null = null
 
   toggleFila(row: any) {
     this.elementoExpandido = this.elementoExpandido === row ? null : row
+  }
+
+  toggleRequi(row: any) {
+    this.requiExpandido = this.requiExpandido === row ? null : row
   }
 
   faSquarePlus = faSquarePlus
@@ -71,6 +85,10 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   faCircleQuestion = faCircleQuestion
   faBroom = faBroom
   faTrashCan = faTrashCan
+  faCheckCircle = faCheckCircle
+  faCode = faCode
+  faFilter = faFilter
+  faBinoculars = faBinoculars
 
   epicas: IEpica[] = []
 
@@ -95,7 +113,7 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   filtroGrupoTrabajo: (number | string)[] = [];
 
   displayedColumns: string[] = [
-    'expand', 'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
+    'requi', 'expand', 'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
     'fpentrega', 'frentrega', 'estado', 'creadoPor', 'asignado', 'Opciones'
   ];
   
@@ -110,6 +128,13 @@ export class ListarEpicas implements OnInit, AfterViewInit {
       case 3: return '#ffecce';
       case 2: return '#c8e6c9';
       case 1: return '#f0f0f0';
+      default: return 'transparent';
+    }
+  }
+
+  getPendienteAsignar(idEstado: number): string {
+    switch (idEstado) {
+      case null: return '#f18691';
       default: return 'transparent';
     }
   }
@@ -392,7 +417,7 @@ export class ListarEpicas implements OnInit, AfterViewInit {
       });
       return
     }
-    let mensaje = '¿Deseas eliminar la épica? Esta acción no se puede deshacer y el registro se eliminará del sistema. El proceso solo se completará si la épica no tiene registros relacionados.'
+    let mensaje = '¿Deseas eliminar la épica? Esta acción no se puede deshacer y el registro se eliminará del sistema junto a sus requisitos. El proceso solo se completará si la épica no tiene registros de otros usuarios.'
        
     this.dialogConfirm.open(ModalConfirma, {
       width: '400px',
@@ -523,4 +548,62 @@ export class ListarEpicas implements OnInit, AfterViewInit {
       state: { datos: epica }
     });
   }
+
+  idRequisitoSeleccionadoPorEpica: { [idEpica: number]: number | null } = {};
+
+  filtrar(idEpica: number, idRequisito: number) {
+      if (this.idRequisitoSeleccionadoPorEpica[idEpica] === idRequisito) {
+          // Si ya estaba activo, lo deseleccionamos (deshace el filtro)
+          this.idRequisitoSeleccionadoPorEpica[idEpica] = null;
+      } else {
+          // Si no, aplicamos el filtro con este requisito
+          this.idRequisitoSeleccionadoPorEpica[idEpica] = idRequisito;
+      }
+  }
+
+  getTareasFiltradas(row: any) {
+    const idReq = this.idRequisitoSeleccionadoPorEpica[row.id];
+    
+    // Si no hay ningún requisito seleccionado para esta épica, devuelve todas las tareas
+    if (!idReq) {
+        return row.tareas;
+    }
+
+    // Si hay un requisito seleccionado, filtra las tareas que lo contienen
+    return row.tareas.filter((t: any) => {
+        const requisitoTareas = t.requisito_tareas || t.requisitoTareas;
+        return requisitoTareas?.some((rt: any) => rt.id_requisito === idReq);
+    });
+  }
+
+  modalHistorial(tarea: ITarea, nombreEpica: string){    
+    console.log(tarea)
+    const tareaConEpica = {
+      ...tarea,
+      ruta_origen: "/crear-programa-epica",
+      tarea: tarea.nombre,
+      epica: nombreEpica
+    }
+     this.modalHistorialServicio.abrirModal(tareaConEpica)
+  }
+
+  getMaxFechaEntrega(tareas: any[]): string | null {
+    if (!tareas || tareas.length === 0) return null;
+
+    // Compara las fechas string (formato ISO YYYY-MM-DDTHH:mm:ss...) para encontrar la mayor
+    return tareas.reduce((max, tarea) => {
+      return (!max || tarea.f_pentrega > max) ? tarea.f_pentrega : max;
+    }, null);
+  }
+
+  getTotalHoras(tareas: any[]): number | null {
+    if (!tareas || tareas.length === 0) return null;
+    let total: number = 0
+    tareas.forEach(element => {
+      total = total + element.hrs_estimadas
+    });
+    return total
+  }
+
+  
 }

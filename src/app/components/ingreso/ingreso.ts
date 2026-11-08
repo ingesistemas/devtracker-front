@@ -73,65 +73,55 @@ faEyeSlash = faEyeSlash;
       let datos = this.formulario.value
 
       this.peticionServicio.peticion('/usuarios/ingresar', datos, 'POST')
-        .subscribe({
-          next: (resp) => {
-            console.log(resp , '...................')
-    
-            if (resp.error) {
-              this.modalMensajeServicio.abrirModal({
-                "tipo": "error",
-                "titulo": "Error:",
-                "mensaje": resp.mensaje
-              })
-            } else {
-              this.authService.setToken(resp.token);
-              
-              let epicaActiva = (resp.user.epica_activa?.nombre ?? '').toUpperCase();
-              let tareaActiva = resp.user.tarea_activa?.detalle ?? ''
-              let actividad = ''
-              if(tareaActiva != ''){
-                actividad = epicaActiva + ' - ' + tareaActiva
-              }
-              let fecha = new Date().toISOString();
-              let id_epica = 0
-              let fecActiva = null
-              let tiempo = resp.user.tiempo
-              let id_tarea = 0
-              this.tareaCronometroServicio.setTarea(actividad)
-              if(resp.user.tarea_activa){
-                id_epica = resp.user.epica_activa.id
-                id_tarea = resp.user.tarea_activa.id
-                fecActiva = resp.user.tarea_activa.fec_ini
-                tiempo = resp.user.tarea_activa.tiempo
-                this.cronometroServicio.setActualizarDatos(id_tarea, tiempo, fecha)
-              } else {
-                /* id_epica = resp.user.id_epica,
-                id_tarea = resp.user.id_tarea,
-                tiempo = resp.user.tiempo */
-              }
-              this.datosServicio.setUser({
-                id: resp.user.id,
-                id_empresa: resp.user.id_empresa,
-                email: resp.user.email,
-                id_rol: resp.user.id_rol,
-                id_epica: id_epica,
-                id_tarea: id_tarea,
-                fec_ini: fecha,
-                tiempo: tiempo
-              })
-            
-              
-              /* this.cronometroServicio.setActualizarDatos(id_tarea, tiempo, fecActiva)*/
-              this.intervalo = setInterval(() => this.cronometroServicio.setCronometro(), 60000);
-
-             
-              
-              this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' })
-              this.router.navigateByUrl("/contenedor")
+      .subscribe({
+        next: (resp) => {    
+          if (resp.error) {
+            this.modalMensajeServicio.abrirModal({
+              "tipo": "error",
+              "titulo": "Error:",
+              "mensaje": resp.mensaje
+            })
+          } else {
+            this.authService.setToken(resp.token);
+            let epicaActiva = (resp.user.epica_activa?.nombre ?? '').toUpperCase();
+            let tareaActiva = resp.user.tarea_activa?.nombre ?? ''
+            let actividad = ''
+            if(tareaActiva != ''){
+              actividad = epicaActiva + ' - ' + tareaActiva
             }
-             this.modalCargandoServicio.abrirModal(false)
+            let fecha = new Date().toISOString();
+            let id_epica = 0
+            let fecActiva = null
+            let tiempo = resp.user.tiempo
+            let id_tarea = 0
+            this.tareaCronometroServicio.setTarea(actividad)
+            if(resp.user && resp.user.tarea_activa){
+              id_epica = resp.user?.epica_activa?.id || 0
+              id_tarea = resp.user.tarea_activa.id
+              fecActiva = resp.user.tarea_activa.fec_ini
+              tiempo = resp.user.tarea_activa.tiempo
+              this.cronometroServicio.setActualizarDatos(id_tarea, tiempo, fecha)
+            } 
+            this.datosServicio.setUser({
+              id: resp.user.id,
+              id_empresa: resp.user.id_empresa,
+              email: resp.user.email,
+              id_rol: resp.user.id_rol,
+              id_epica: id_epica,
+              id_tarea: id_tarea,
+              fec_ini: fecha,
+              tiempo: tiempo
+            })
+          
+            
+            /* this.cronometroServicio.setActualizarDatos(id_tarea, tiempo, fecActiva)*/
+            this.intervalo = setInterval(() => this.cronometroServicio.setCronometro(), 60000);              
+            this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' })
+            this.router.navigateByUrl("/contenedor")
           }
-        }) 
+            this.modalCargandoServicio.abrirModal(false)
+        }
+      }) 
     }
 
   }

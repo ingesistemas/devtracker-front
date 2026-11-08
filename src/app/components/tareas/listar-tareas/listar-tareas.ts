@@ -322,6 +322,7 @@ export class ListarTareas {
     this.peticionServicio.peticion(`/tareas/consultar/${id}/${id_epica}`, null, 'GET')
     .subscribe({
       next: (resp) => {
+        console.log(resp)
         if (resp.error) {
           this.modalMensajeServicio.abrirModal({
             "tipo": "error",
@@ -568,15 +569,27 @@ export class ListarTareas {
         } else {          
           row.cronometro = (checked ? 1 : 0)
           this.tareas.forEach(tarea => {
-            if(row.id != tarea.id){
-              tarea.cronometro = 0;
+            if(row.id != tarea.id && (tarea.id_estado == 2 || tarea.id_estado == 7)){
+              if(row.id_estado == 2 || row.id_estado == 7 || row.id_estado == 1){
+                tarea.id_estado = 7
+                tarea.estado.id = 7
+                tarea.estado.estado = 'Pausa'
+
+                row.id_estado = 7
+                row.estado.id = 7
+                row.estado.estado = 'Pausa'  
+              }                              
             }
+            if(row.id != tarea.id){
+              tarea.cronometro = 0; 
+            }
+            
             let horas = (this.cronometroServicio.horaActual() * 60)
             let minutos = (this.cronometroServicio.minutoActual())
                      
             if(tareaActiva != null){
               if(tarea.id == tareaActiva.id) {
-                tarea.tiempo = (horas + minutos)
+                tarea.tiempo = (horas + minutos)  
               }
             } 
           });         
@@ -589,13 +602,19 @@ export class ListarTareas {
             this.tareaCronometroServicio.setTarea('')
             this.datosTempServicio.setTareaActiva(0, fecha, 0)
             this.cronometroServicio.setActualizarDatos(0, 0, fecha)
+            row.id_estado = 7
+            row.estado.id = 7
+            row.estado.estado = 'Pausa' 
           } else {
             let horas = (this.cronometroServicio.horaActual() * 60)
             let minutos = (this.cronometroServicio.minutoActual())
             let tiempo = (row.tiempo + horas + minutos)
             this.datosTempServicio.setTareaActiva(row.id, row.fec_ini, tiempo)
-            this.tareaCronometroServicio.setTarea(row.detalle)
+            this.tareaCronometroServicio.setTarea(row.nombre)
             this.cronometroServicio.setActualizarDatos(row.id, row.tiempo, fecha)
+            row.id_estado = 2
+            row.estado.id = 2
+            row.estado.estado = 'Desarrollo'
           }
           this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
 
@@ -709,9 +728,21 @@ export class ListarTareas {
   }
 
   actualizarEstado(tarea: any, event: Event){
-  
     const selectElement = event.target as HTMLSelectElement;
     const valor = selectElement.value;
+
+    if(tarea.calidad == 'NO' && valor == '4'){
+      let mensaje = "Esta actividad está exenta del flujo de QA. Es responsabilidad del asignado validar el correcto funcionamiento del requerimiento antes de su cierre."
+      selectElement.value = tarea.id_estado;
+      this.modalMensajeServicio.abrirModal({
+        "tipo": "error",
+        "titulo": "Error:",
+        "mensaje": mensaje
+      });
+      return
+    }
+  
+   
     if(valor == "6" || valor == "8" || valor == "9" || valor == "10" || valor == "11"){
       selectElement.value = tarea.id_estado;
       this.modalMensajeServicio.abrirModal(
@@ -874,13 +905,14 @@ export class ListarTareas {
   }
 
   modalHistorial(tarea: ITarea){    
+    console.log(tarea)
     const tareaConEpica = {
-    ...tarea,
-    ruta_origen: "/crear-programa-epica",
-    tarea: tarea.nombre
-  };
+      ...tarea,
+      ruta_origen: "/crear-programa-epica",
+      tarea: tarea.nombre
+    };
 
-  this.modalHistorialServicio.abrirModal(tareaConEpica)
+    this.modalHistorialServicio.abrirModal(tareaConEpica)
   }
  
 }

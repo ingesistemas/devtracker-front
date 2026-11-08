@@ -6,7 +6,7 @@
         </button>
 
         <button type="button" class="btn btn-sm btn-aceptar d-flex align-items-center" (click)="crear()">
-            <fa-icon [icon]="faSquarePlus" class="me-2"></fa-icon><span>Nuevo registro</span>
+            <fa-icon [icon]="faSquarePlus" class="me-3"></fa-icon><span>Nueva épica</span>
         </button>
     </div>
 </div> 
@@ -101,7 +101,7 @@
         </div>
 
         <div class="mat-shadow-2 contiene-tabla">
-            <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows class="tabla">
+            <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows class="tabla prueba">
                 
                 <!-- <ng-container matColumnDef="id">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
@@ -110,6 +110,19 @@
                 </ng-container>
                 -->
                 
+                <ng-container matColumnDef="requi">
+                    <th mat-header-cell *matHeaderCellDef aria-label="Acción desplegar" class="mat-column-expand">&nbsp;</th>
+                    <td mat-cell *matCellDef="let row" class="mat-column-expand">
+                        <button mat-icon-button 
+                                type="button"
+                                aria-label="desplegar tareas" 
+                                (click)="toggleRequi(row); $event.stopPropagation()"
+                                class="btn-acciones">
+                            <mat-icon>{{ requiExpandido === row ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="expand">
                     <th mat-header-cell *matHeaderCellDef aria-label="Acción desplegar" class="mat-column-expand">&nbsp;</th>
                     <td mat-cell *matCellDef="let row" class="mat-column-expand">
@@ -151,13 +164,18 @@
                 <ng-container matColumnDef="fpentrega">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> F. Estimada </th>
                     <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'"
-                    [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> {{ row.f_pentrega | date:'dd/MM/yyyy':'UTC' }} </td>
+                    [style.backgroundColor]="getPrioridadColor(row.id_prioridad)">  {{ getMaxFechaEntrega(row.tareas) | date:'dd/MM/yyyy':'UTC' }} - 
+                        @if (getTotalHoras(row.tareas)! > 0) {
+                            <span>{{ getTotalHoras(row.tareas) }} Hrs</span>
+                        } </td>
                 </ng-container>
 
                 <ng-container matColumnDef="frentrega">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> F. Entrega </th>
                     <td mat-cell *matCellDef="let row" [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'" 
-                    [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> {{ row.f_rentrega | date:'dd/MM/yyyy':'UTC'}} </td>
+                    [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                     {{ row.f_rentrega | date:'dd/MM/yyyy':'UTC' }}
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="estado">
@@ -182,14 +200,15 @@
 
                 <ng-container matColumnDef="asignado">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> <fa-icon [icon]="faCircleQuestion" style="color: #FFF !important; margin-right: 5px !important;"></fa-icon> Asignado a: </th>
-                    <td mat-cell *matCellDef="let row" class="texto-ajustado" [style.backgroundColor]="getPrioridadColor(row.id_prioridad)"> 
+                    <td mat-cell *matCellDef="let row" class="texto-ajustado" 
+                    [style.backgroundColor]="(!row.id_estado || row.id_estado === 0) ? getPendienteAsignar(row.id_estado) : getPrioridadColor(row.id_prioridad)"> 
                         <button [ngClass]="row.activo == 1 ? 'inactivo' : 'activo'"
                             type="button" 
                             class="btn-user-link"
                             #trigger="cdkOverlayOrigin"
                             cdkOverlayOrigin
                             (click)="openOverlay(trigger, row.usuario_asignado)">
-                            {{ row.usuario_asignado?.nombre }}
+                            {{ row.usuario_asignado?.nombre || "SIN ASIGNAR" }}
                         </button>
                     </td>
                 </ng-container>
@@ -218,6 +237,78 @@
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="expandedRequisito">
+                    <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length" style="padding: 0 !important; border: 0 !important;">
+                        <div class="detalle-wrapper" [class.detalle-wrapper-expanded]="requiExpandido === row">
+                            @if (requiExpandido === row) {
+                                <div class="p-3 bg-light border-top w-100">
+                                    <h5 class="mb-4">Requisitos:</h5>
+                                    @if (row.requisitos && row.requisitos.length > 0) {
+                                        <div class="mt-2 mb-3">
+                                            <!-- Cabecera de la tabla -->
+                                            <div class="d-flex align-items-center text-muted mb-3 ps-1 border-bottom pb-1" style="font-size: 0.85rem;">
+                                                <div class="me-3 text-center" style="width: 20px;" title="Calidad">
+                                                    <fa-icon [icon]="faCheckCircle" style="color: #6c757d;"></fa-icon>
+                                                </div>
+                                                <div class="me-3 text-center" style="width: 20px;" title="Desarrollo">
+                                                    <fa-icon [icon]="faCode" style="color: #6c757d;"></fa-icon>
+                                                </div>
+                                                <div class="flex-grow-1 fw-bold">Descripción</div>
+                                            </div>
+
+                                            <!-- Lista de requisitos -->
+                                            <ul class="list-group list-group-flush">
+                                                @for (requisito of row.requisitos; track requisito.id; let even = $even) {
+                                                    <li class="list-group-item px-2" style="margin-top: 5px;">
+                                                        <div class="d-flex align-items-center">
+                                                            <!-- Check de Calidad -->
+                                                            <div class="me-3 text-center" style="width: 20px;"
+                                                            [matTooltip]="requisito.calidad === 1 ? 'Aprobado por calidad' : 'Sin aprobar por calidad'"
+                                                            matTooltipPosition="above"
+                                                            matTooltipClass="mi-tooltip-personalizado">
+                                                                <input class="form-check-input" type="checkbox" [checked]="requisito.calidad" disabled>
+                                                            </div>
+
+                                                            <!-- Check de Desarrollo -->
+                                                            <div class="me-3 text-center" style="width: 20px;" 
+                                                            [matTooltip]="requisito.desarrollo === 1 ? 'Desarrollo finalizado' : 'En desarrollo'"
+                                                            matTooltipPosition="right"
+                                                            matTooltipClass="mi-tooltip-personalizado">
+                                                                <input class="form-check-input" type="checkbox" [checked]="requisito.desarrollo" disabled>
+                                                            </div>
+
+                                                            <!-- Búsqueda tareas relacionadas (Pasamos row.id y requisito.id) -->
+                                                            <div class="me-3 text-center" style="width: 20px;">
+                                                                <span class="btn-ico" style="cursor: pointer;" (click)="filtrar(row.id, requisito.id)"
+                                                                [matTooltip]="idRequisitoSeleccionadoPorEpica[row.id] === requisito.id ? 'Quitar filtro' : 'Filtrar tareas'"
+                                                                matTooltipPosition="right"
+                                                                matTooltipClass="mi-tooltip-personalizado">
+                                                                    <fa-icon [icon]="faFilter" 
+                                                                            [style.color]="idRequisitoSeleccionadoPorEpica[row.id] === requisito.id ? '#d9534f' : '#20b8d1'" >
+                                                                    </fa-icon>
+                                                                </span>
+                                                            </div>
+
+                                                            <!-- Texto del requisito -->
+                                                            <div class="flex-grow-1">
+                                                                <span style="color: #5b5b5b !important;">{{ requisito.requisito }}</span>
+                                                                <mat-progress-bar class="custom-progress" mode="determinate" value="90" style="width: 30%;"></mat-progress-bar>
+                                                                <span style="font-size: 10px;">90%</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    } @else {
+                                        <span class="text-muted small">No hay requisitos registrados para esta épica.</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="expandedDetail">
                     <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length" style="padding: 0 !important; border: 0 !important;">
                         <div class="detalle-wrapper" [class.detalle-wrapper-expanded]="elementoExpandido === row">
@@ -226,14 +317,10 @@
                                     <h5 class="mb-4">Tareas y observaciones:</h5>
                                     @if (row.tareas && row.tareas.length > 0) {
                                         <ul class="list-group list-group-flush">
-                                            @for (tarea of row.tareas; track tarea.id; let even = $even) {
+                                            @for (tarea of getTareasFiltradas(row); track tarea.id; let even = $even) {
                                                 <li class="list-group-item p-3 mb-5 rounded" 
                                                 [ngClass]="even ? 'bg-light-li' : 'bg-white'">
                                                     <div class="mb-3 border-bottom pb-2">
-                                                        
-                                                        <!-- Nombre de la Tarea -->
-                                                        
-                                                        <!--  <fa-icon [icon]="faSquareCheck" class="me-2"></fa-icon> -->
                                                     
                                                         <span class="nombreTarea texto-subrayado">{{ tarea.nombre }} [ {{ tarea.estado.estado }} ]</span> 
 
@@ -247,7 +334,13 @@
                                                         class="badge rounded-pill">Prioridad: {{tarea.nom_prioridad}} 
                                                         </span>
 
+                                                        <span class="nombreCreo"> Fecha estimada {{ tarea.f_pentrega | date:'dd/MM/yyyy':'UTC' }} - {{ tarea.hrs_estimadas }} horas</span>
+
                                                         <span class="nombreCreo"> Creada por: {{ tarea.usuario_creo.nombre }} - {{ tarea.created_at | date:'dd/MM/yyyy':'UTC' }}</span>
+
+                                                        <span (click)="modalHistorial(tarea, row.nombre)"><fa-icon [icon]="faBinoculars" class="ico_historial" 
+                                                        matTooltip="Consultar historial de la tarea."
+                                                        matTooltipClass="mi-tooltip-personalizado"></fa-icon></span>
 
                                                         <!-- Bucle de Observaciones de ESTA tarea -->
                                                         @if (tarea.observaciones && tarea.observaciones.length > 0) {
@@ -290,6 +383,11 @@
 
                 <!-- Fila de Detalle Desplegable (Tareas) -->
                 <tr mat-row 
+                    *matRowDef="let row; columns: ['expandedRequisito'];" 
+                    class="fila-detalle">
+                </tr>
+
+                <tr mat-row 
                     *matRowDef="let row; columns: ['expandedDetail'];" 
                     class="fila-detalle">
                 </tr>
@@ -315,7 +413,7 @@
                 </app-popover>
             </ng-template>
 
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Paginación"></mat-paginator>
+            <mat-paginator [pageSize]="100" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Paginación"></mat-paginator>
         </div>
     </div>
 </div>

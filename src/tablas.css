@@ -127,7 +127,7 @@
 }
 
 table, td, th, tr{
-    cursor: pointer;
+   /*  cursor: pointer; */
 }
 
 /** LINK INFORMATIVO***/
@@ -348,3 +348,24 @@ mat-form-field.filtro-activo .mat-mdc-select-arrow {
 }
 
 
+.lista-requisitos{
+    background-color: #ffffff;
+    margin-left: -20px;
+    width: 90%;
+    margin: 5px auto;
+    margin-bottom: 50px;
+    border: 1px solid #eeeeee;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.requisito{
+    color: #6e6e6e !important;
+    font-size: 14px !important;
+}
+
+.btn-ico:hover{
+    background-color: #ededf3;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+
+}
+ 

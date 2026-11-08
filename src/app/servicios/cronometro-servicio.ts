@@ -83,10 +83,13 @@ export class CronometroServicio implements OnDestroy {
   }
 
   restaurar(){
-
+    this._tiempoAcumulado.set(0)
+    this._horaActual.set(0)
+    this._minutoActual.set(0)
+    this._id_tarea.set(0)
   }
 
   ngOnDestroy(){
-
+    
   }
 }
