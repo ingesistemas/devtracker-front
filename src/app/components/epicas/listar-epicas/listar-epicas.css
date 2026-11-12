@@ -123,26 +123,9 @@ tr.fila-elemento.fila-expandida td {
   font-size: 12px;
 }
 
-.bg-light-li{
-  background-color: #f5f5f5 !important;
 
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
- 
-}
 
-.bg-white{
-  background-color:rgb(227, 232, 242) !important;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 
-}
-
-.texto-subrayado {
-  text-decoration-line: underline;
-  text-decoration-color: #00237d;      /* Color del subrayado */
-  text-decoration-style:dashed ;         /* Estilo: solid, double, dotted, dashed, wavy */
-  text-decoration-thickness: 1px;      /* Grosor de la línea */
-  text-underline-offset: 6px;          /* Separación entre el texto y la línea */
-}
 
 .detSubTitulo{
      color: #004d90;
@@ -159,4 +142,8 @@ tr.fila-elemento.fila-expandida td {
 
 .prueba{
   color: #d7660a !important;
+}
+
+::ng-deep .mat-mdc-row .mat-mdc-cell {
+  border-bottom-color: #d9d9d9 !important; /* Cambia este color por el que prefieras */
 }

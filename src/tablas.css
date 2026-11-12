@@ -17,8 +17,9 @@
 
 .titulo-tabla{
     margin: 25px auto !important;
-    background-color: #8fc4e55d;
+    background-color: #8fc4e529;
      background-color: #dde9fb;
+     background-color: #dde9fb64;
     padding-left: 15px;
     margin-bottom: -25px !important;
     height: 50px;
@@ -40,7 +41,6 @@
     align-items: center;
     width: 100%;
     border: 1px solid #dfdede;
-
 }
 
 .tabla .mat-mdc-cell {
@@ -108,6 +108,7 @@
     color: #484848 !important;
     padding-bottom: 0px !important;
     width: 100% !important;
+    background-color: #f6f6f6 !;
 }
 
 
@@ -366,6 +367,48 @@ mat-form-field.filtro-activo .mat-mdc-select-arrow {
 .btn-ico:hover{
     background-color: #ededf3;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-
 }
- 
+
+.bg-light-li{
+  background-color: #f5f7fc !important;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    box-shadow: 5px 5px 5px rgb(218, 218, 218);
+}
+
+.bg-white{
+  background-color:rgba(241, 241, 241, 0.237) !important;
+   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+   box-shadow: 5px 5px 5px rgb(218, 218, 218);
+}
+
+.texto-subrayado {
+  text-decoration-color: #505050;      /* Color del subrayado */
+  text-decoration-thickness: 1px;      /* Grosor de la línea */
+  text-underline-offset: 6px;          /* Separación entre el texto y la línea */
+}
+
+.nombreTarea{
+    color: #2a2a2a;
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.nombreCreo{
+  margin-left: 7px;
+  color: #585858 ;
+  font-size: 12px;
+}
+
+.detSubTitulo{
+     color: #004d90;
+}
+
+.subTitulo{
+    color: black;
+}
+
+.badge{
+  font-weight: normal !important;
+}
+
+

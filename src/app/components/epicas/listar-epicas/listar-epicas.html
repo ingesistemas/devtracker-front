@@ -258,7 +258,7 @@
 
                                             <!-- Lista de requisitos -->
                                             <ul class="list-group list-group-flush">
-                                                @for (requisito of row.requisitos; track requisito.id; let even = $even) {
+                                                @for (requisito of row.requisitos; track requisito.id; let i = $index; let even = $even) {
                                                     <li class="list-group-item px-2" style="margin-top: 5px;">
                                                         <div class="d-flex align-items-center">
                                                             <!-- Check de Calidad -->
@@ -292,8 +292,8 @@
                                                             <!-- Texto del requisito -->
                                                             <div class="flex-grow-1">
                                                                 <span style="color: #5b5b5b !important;">{{ requisito.requisito }}</span>
-                                                                <mat-progress-bar class="custom-progress" mode="determinate" value="90" style="width: 30%;"></mat-progress-bar>
-                                                                <span style="font-size: 10px;">90%</span>
+                                                                <mat-progress-bar class="custom-progress" mode="determinate" value="{{ getTotalPorcentaje(requisito.requisito_tareas) }}" style="width: 30%;"></mat-progress-bar>
+                                                                <span style="font-size: 10px;">{{ getTotalPorcentaje(requisito.requisito_tareas) }}%</span>
                                                             </div>
                                                         </div>
                                                     </li>

@@ -124,9 +124,9 @@ export class ListarEpicas implements OnInit, AfterViewInit {
 
   getPrioridadColor(idPrioridad: number): string {
     switch (idPrioridad) {
-      case 4: return '#ffd8dc';
-      case 3: return '#ffecce';
-      case 2: return '#c8e6c9';
+      case 4: return '#ffe2e2';
+      case 3: return '#feffde';
+      case 2: return '#d8ffeb';
       case 1: return '#f0f0f0';
       default: return 'transparent';
     }
@@ -134,7 +134,7 @@ export class ListarEpicas implements OnInit, AfterViewInit {
 
   getPendienteAsignar(idEstado: number): string {
     switch (idEstado) {
-      case null: return '#f18691';
+      case null: return '#ffc3c9';
       default: return 'transparent';
     }
   }
@@ -291,6 +291,57 @@ export class ListarEpicas implements OnInit, AfterViewInit {
     });
   }
 
+  getTotalPorcentaje(requisitoTareas: any[]): number {
+    if (!requisitoTareas || requisitoTareas.length === 0) return 0;
+
+    let valorTotalCalculado = 0;
+
+    requisitoTareas.forEach(item => {
+      const porcentajeBase = Number(item.porcentaje || 0);
+      const checkedId = Number(item.checked_id || 0);
+
+      // 1. Aplicamos la regla base del 70% a cada elemento
+      let valorItem = 0;
+      
+
+      // 2. Sumamos el bono adicional según el checked_id de la tarea
+      switch (checkedId) {
+      case 3:
+        // (valor * 70) / 100 (No suma extra, o se queda con la base)
+        valorItem = (porcentajeBase * 70) / 100;
+        break;
+      case 4:
+        valorItem = (porcentajeBase * 90) / 100;
+        break;
+      case 8:
+        valorItem = (porcentajeBase * 90) / 100;
+        valorItem = valorItem - 10;
+        break;
+      case 9:
+       valorItem = (porcentajeBase * 95) / 100;
+        break;
+      case 5:
+       valorItem = (porcentajeBase * 95) / 100;
+        break;
+      case 10:
+       valorItem = (porcentajeBase * 90) / 100;
+        break;
+      case 11:
+       valorItem = (porcentajeBase * 100) / 100;
+        break;
+      default:
+        // Si no tiene un estado válido, no suma valor
+        valorItem = 0;
+        break;
+    }
+
+      // Acumulamos el valor de todas las tareas
+      valorTotalCalculado += valorItem;
+    });
+
+    // 3. Redondeamos a 1 decimal (o 2 según prefieras) y retornamos
+    return Number(valorTotalCalculado.toFixed(1));
+  }
   extraerCatalogosFiltros(data: IEpica[]) {
     const estadosMap = new Map()
     const usuariosMap = new Map()

@@ -299,7 +299,7 @@ export class RechazarTarea implements OnInit {
     }
 
     formData.forEach((value, key) => {
-    
+  
     });
 
     this.peticionServicio.peticion(this.url, formData, 'POST')

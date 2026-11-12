@@ -423,13 +423,17 @@ export class CrearTarea {
     if (itemEncontrado) {
         itemEncontrado.checked_id = estaMarcado; // Usa 'checked' (o 'checked_id' si prefieres, pero manténlo igual en el HTML)
     }
+    let mId_complejidad = this.formularioTareas.controls['id_complejidad'].value
+    alert(mId_complejidad)
     let datosRequisitos = {
       id_requisito: requisito.id,
-      id_tarea: this.idTareaCreada
+      id_tarea: this.idTareaCreada,
+      id_complejidad: mId_complejidad
     }
     this.peticionServicio.peticion(url, datosRequisitos, "POST")
     .subscribe({
       next: (res)=>{
+        console.log(res)
         if(res.error){
           this.modalMensajeServicio.abrirModal({
             tipo: "error",
@@ -445,7 +449,7 @@ export class CrearTarea {
         this.modalMensajeServicio.abrirModal({
           tipo: "error",
           titulo: "Error:",
-          mensaje: error.error?.message ?? error.error?.mensaje ?? error.message ?? 'Se presentó un error en el servidor.'
+          mensaje: error.error?.message ?? error.error?.mensaje ?? error.message ?? 'Se presentó un error en el servidor....'
         });
       }
     })

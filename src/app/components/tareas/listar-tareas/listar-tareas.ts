@@ -147,9 +147,9 @@ export class ListarTareas {
 
   getPrioridadColor(idPrioridad: number): string {
     switch (idPrioridad) {
-      case 4: return '#ffd8dc';
-      case 3: return '#ffecce';
-      case 2: return '#c8e6c9';
+      case 4: return '#ffe2e2';
+      case 3: return '#feffde';
+      case 2: return '#d8ffeb';
       case 1: return '#f0f0f0';
       default: return 'transparent';
     }
@@ -766,6 +766,7 @@ export class ListarTareas {
       )
       return
     }
+    
 
     if(valor != '4'){
       this.modalCargandoServicio.abrirModal(true)
@@ -776,6 +777,7 @@ export class ListarTareas {
     }
 
     if(valor == '4'){
+      alert(valor)
       this.modalCargandoServicio.abrirModal(true)
       this.formularioTareas.controls['id_estado'].setValue(valor)
       this.formularioTareas.controls['id'].setValue(tarea.id)

@@ -130,3 +130,7 @@ option:disabled {
 .opcion_estado{
   color: #1e03b6 !important;
 }
+
+::ng-deep .mat-mdc-row .mat-mdc-cell {
+  border-bottom-color: #d9d9d9 !important; /* Cambia este color por el que prefieras */
+}
