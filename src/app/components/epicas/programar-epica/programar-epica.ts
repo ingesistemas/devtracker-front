@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
-import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faClock, faBinoculars } from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faClock, faBinoculars, faCode, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -28,6 +28,9 @@ import { DatosTareasServicio } from '../../../servicios/datos-tareas-servicio';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ModalHistorialServicio } from '../../../servicios/modal-historial-servicio';
 import { ITarea } from '../../../interfaces/itarea';
+import { faCheckCircle, faFilePdf } from '@fortawesome/free-regular-svg-icons';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
@@ -48,7 +51,9 @@ import { ITarea } from '../../../interfaces/itarea';
     CommonModule, 
     OverlayModule, 
     Popover,
-    DragDropModule
+    DragDropModule,
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   templateUrl: './programar-epica.html',
   styleUrl: './programar-epica.css',
@@ -64,12 +69,8 @@ export class ProgramarEpica {
   private datosTareasServicio = inject(DatosTareasServicio)
   private modalHistorialServicio = inject(ModalHistorialServicio)
 
-
-  elementoExpandido: any | null = null;
-
-  toggleFila(row: any) {
-    this.elementoExpandido = this.elementoExpandido === row ? null : row;
-  }
+  elementoExpandido: any | null = null
+  requiExpandido: any | null = null
 
   faSquarePlus = faSquarePlus
   faPenToSquare = faPenToSquare
@@ -79,6 +80,10 @@ export class ProgramarEpica {
   faBroom = faBroom
   faClock = faClock
   faBinoculars = faBinoculars
+  faFilePdf = faFilePdf
+  faCheckCircle = faCheckCircle
+  faCode = faCode
+  faFilter = faFilter
 
   epicas: IEpica[] = [];
 
@@ -102,7 +107,7 @@ export class ProgramarEpica {
   filtroUsuario: (number | string)[] = [];
 
   displayedColumns: string[] = [
-    'expand', 'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
+    'requi', 'expand', 'fecha', 'nombre', 'proyecto', 'nom_prioridad', 
     'fpentrega', 'frentrega', 'estado', 'creadoPor', 'asignado', 'Opciones'
   ];
   
@@ -438,7 +443,7 @@ aplicarFiltrosCombinados(): void {
     return total
   }
 
-   modalHistorial(tarea: ITarea, nombreEpica: string){    
+  modalHistorial(tarea: ITarea, nombreEpica: string){    
     console.log(tarea)
     const tareaConEpica = {
       ...tarea,
@@ -448,4 +453,142 @@ aplicarFiltrosCombinados(): void {
     }
      this.modalHistorialServicio.abrirModal(tareaConEpica)
   }
+
+  generarPdfDesdeFrontend() {
+    this.modalCargandoServicio.abrirModal(true)
+    // Supongamos que tu variable con los datos se llama 'misEpicas'
+    const payload = {
+      datos: this.epicas // Aquí va el objeto JSON que ya tienes
+    };
+
+    // Haces la petición POST al archivo PHP (o ruta de tu backend)
+    this.peticionServicio.peticionPDF('/epicas/PDFEpicas', payload, { responseType: 'blob' })
+    .subscribe({
+      next: (resp) => {       
+        // Convertimos la respuesta binaria en un Blob de tipo PDF
+        const blob = new Blob([resp], { type: 'application/pdf' });
+
+        // Procedemos a descargar el archivo normalmente
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      complete:()=>{
+        this.modalCargandoServicio.abrirModal(false)
+      }
+    });
+  }
+
+  toggleFila(row: any) {
+    this.elementoExpandido = this.elementoExpandido === row ? null : row
+  }
+
+  toggleRequi(row: any) {
+    this.requiExpandido = this.requiExpandido === row ? null : row
+  }
+
+  idRequisitoSeleccionadoPorEpica: { [idEpica: number]: number | null } = {};
+
+  filtrar(idEpica: number, idRequisito: number) {
+      if (this.idRequisitoSeleccionadoPorEpica[idEpica] === idRequisito) {
+          // Si ya estaba activo, lo deseleccionamos (deshace el filtro)
+          this.idRequisitoSeleccionadoPorEpica[idEpica] = null;
+      } else {
+          // Si no, aplicamos el filtro con este requisito
+          this.idRequisitoSeleccionadoPorEpica[idEpica] = idRequisito;
+      }
+  }
+
+  getTareasFiltradas(row: any) {
+    const idReq = this.idRequisitoSeleccionadoPorEpica[row.id];
+    
+    // Si no hay ningún requisito seleccionado para esta épica, devuelve todas las tareas
+    if (!idReq) {
+        return row.tareas;
+    }
+
+    // Si hay un requisito seleccionado, filtra las tareas que lo contienen
+    return row.tareas.filter((t: any) => {
+        const requisitoTareas = t.requisito_tareas || t.requisitoTareas;
+        return requisitoTareas?.some((rt: any) => rt.id_requisito === idReq);
+    });
+  }
+
+  getTotalPorcentaje(requisitoTareas: any[]): number {
+    if (!requisitoTareas || requisitoTareas.length === 0) return 0;
+
+    let valorTotalCalculado = 0;
+
+    requisitoTareas.forEach(item => {
+      const porcentajeBase = Number(item.porcentaje || 0);
+      const checkedId = Number(item.checked_id || 0);
+
+      // 1. Aplicamos la regla base del 70% a cada elemento
+      let valorItem = 0;
+      
+
+      // 2. Sumamos el bono adicional según el checked_id de la tarea
+      switch (checkedId) {
+      case 3:
+        // (valor * 70) / 100 (No suma extra, o se queda con la base)
+        valorItem = (porcentajeBase * 70) / 100;
+        break;
+      case 4:
+        valorItem = (porcentajeBase * 90) / 100;
+        break;
+      case 8:
+        valorItem = (porcentajeBase * 90) / 100;
+        valorItem = valorItem - 10;
+        break;
+      case 9:
+       valorItem = (porcentajeBase * 95) / 100;
+        break;
+      case 5:
+       valorItem = (porcentajeBase * 95) / 100;
+        break;
+      case 10:
+       valorItem = (porcentajeBase * 90) / 100;
+        break;
+      case 11:
+       valorItem = (porcentajeBase * 100) / 100;
+        break;
+      default:
+        // Si no tiene un estado válido, no suma valor
+        valorItem = 0;
+        break;
+    }
+
+      // Acumulamos el valor de todas las tareas
+      valorTotalCalculado += valorItem;
+    });
+
+    // 3. Redondeamos a 1 decimal (o 2 según prefieras) y retornamos
+    return Number(valorTotalCalculado.toFixed(1));
+  }
+
+  getPorcentajeTarea(tiempo: number, hrs_estimadas: number) {
+    let valor = 0
+    let mTiempo = (tiempo)/60
+    if(mTiempo >= hrs_estimadas){
+      valor = 70
+    }else{
+      valor = (mTiempo * 100)/hrs_estimadas
+      valor = Math.floor(valor * 100) / 100;
+   
+    }
+    return valor
+  }
+
+  getHrsDesarrolloTarea(horas: number | null | undefined): string {
+    const totalMinutos = Number(horas) || 0;
+    const mHoras = Math.floor(totalMinutos / 60);
+    const mMinutos = totalMinutos % 60;
+
+    return `${mHoras}h ${mMinutos}m`;
+  }
+
+
 }
