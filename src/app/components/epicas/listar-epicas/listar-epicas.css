@@ -67,7 +67,17 @@ tr.fila-detalle td.mat-mdc-cell {
   height: 0;
   transition: height 225ms cubic-bezier(0.4, 0.0, 0.2, 1);
   text-align: justify;
-  color: #d7660a;
+}
+
+.detalle-wrapper h5{
+  color: #404040;
+  background-color: #ebf0f3 !important;
+  color: #0579a0;
+  background-color: #dbebf5 !important;
+  padding: 3px;
+  margin-left: 3px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .detalle-wrapper-expanded {
@@ -111,10 +121,15 @@ tr.fila-elemento.fila-expandida td {
   overflow-wrap: anywhere !important;
 }
 
-.nombreTarea{
-    color: #02028a;
-    font-weight: normal;
-    font-size: 16px;
+.nombreTarea {
+    color: #0485a9;
+    font-weight: bold;
+    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-align: left;
+    word-spacing: normal;
 }
 
 .nombreCreo{
@@ -146,4 +161,40 @@ tr.fila-elemento.fila-expandida td {
 
 ::ng-deep .mat-mdc-row .mat-mdc-cell {
   border-bottom-color: #d9d9d9 !important; /* Cambia este color por el que prefieras */
+}
+
+.datosTareas{
+    border: 1px solid #eeeeee;
+    padding: 0 5px;
+    border-radius: 5px;
+    background-color: #eceef3;      
+    top: 200px !important; 
+    margin-right: 0.35rem;
+    margin-bottom: 0.35rem !important;
+}
+.sombraDatosTarea{
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      box-shadow: rgba(50, 68, 93, 0.25) 0px 50px 100px -20px, rgba(133, 133, 133, 0.3) 0px 30px 60px -30px, rgba(162, 162, 163, 0.504) 0px -2px 6px 0px inset;
+}
+
+.fila-progreso {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  line-height: 1;
+}
+
+.custom-progress {
+  width: 30%;
+  height: 5px; /* Ajusta a 4px o 6px según prefieras */
+  --mdc-linear-progress-active-indicator-height: 5px;
+  --mdc-linear-progress-track-height: 5px;
+}
+
+.badge-porcentaje {
+  font-size: 10px;
+  line-height: 1;
+  background-color: rgb(23, 201, 141);
+  color: #FFF;
+  padding: 2px 5px;
+  border-radius: 4px;
 }

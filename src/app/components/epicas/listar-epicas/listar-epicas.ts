@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr'
 import { Router } from '@angular/router'
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet'
 import { MatButtonModule } from '@angular/material/button'
-import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faTrashCan, faFilter, faBinoculars } from '@fortawesome/free-solid-svg-icons'
+import { faCircleQuestion, faEyeSlash, faPenToSquare, faSquareCheck, faSquarePlus, faBroom, faTrashCan, faFilter, faBinoculars, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { MatIconModule } from '@angular/material/icon'
 import { MatMenuModule } from '@angular/material/menu'
@@ -89,6 +89,7 @@ export class ListarEpicas implements OnInit, AfterViewInit {
   faCode = faCode
   faFilter = faFilter
   faBinoculars = faBinoculars
+  faFilePdf = faFilePdf
 
   epicas: IEpica[] = []
 
@@ -654,6 +655,55 @@ export class ListarEpicas implements OnInit, AfterViewInit {
       total = total + element.hrs_estimadas
     });
     return total
+  }
+
+  getHrsDesarrolloTarea(horas: number | null | undefined): string {
+    const totalMinutos = Number(horas) || 0;
+    const mHoras = Math.floor(totalMinutos / 60);
+    const mMinutos = totalMinutos % 60;
+
+    return `${mHoras}h ${mMinutos}m`;
+  }
+
+  getPorcentajeTarea(tiempo: number, hrs_estimadas: number) {
+    let valor = 0
+    let mTiempo = (tiempo)/60
+    if(mTiempo >= hrs_estimadas){
+      valor = 70
+    }else{
+      valor = (mTiempo * 100)/hrs_estimadas
+      valor = Math.floor(valor * 100) / 100;
+   
+    }
+    return valor
+  }
+
+  generarPdfDesdeFrontend() {
+    this.modalCargandoServicio.abrirModal(true)
+    // Supongamos que tu variable con los datos se llama 'misEpicas'
+    const payload = {
+      datos: this.epicas // Aquí va el objeto JSON que ya tienes
+    };
+
+    // Haces la petición POST al archivo PHP (o ruta de tu backend)
+    this.peticionServicio.peticionPDF('/epicas/PDFEpicas', payload, { responseType: 'blob' })
+    .subscribe({
+      next: (resp) => {       
+        // Convertimos la respuesta binaria en un Blob de tipo PDF
+        const blob = new Blob([resp], { type: 'application/pdf' });
+
+        // Procedemos a descargar el archivo normalmente
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reporte_epicas.pdf';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      complete:()=>{
+        this.modalCargandoServicio.abrirModal(false)
+      }
+    });
   }
 
   

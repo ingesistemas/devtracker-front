@@ -6,7 +6,7 @@
         </button>
     </div>
     <div class="card-form" style="width: 80%;">
-        <form [formGroup]="formularioTareas" autocomplete="off">                    
+        <form [formGroup]="formularioTareas" autocomplete="off" >                    
             <div class="row">
                 @if(mostrarFormTarea){
                     <div class="formCrearTarea row">
@@ -132,6 +132,7 @@
                                         <span class="requisito" style="display: inline-block; min-width: 20px;">{{ item.id }}</span>
                                         <input class="form-check-input" type="checkbox" style="cursor: pointer; margin-right: 10px;" 
                                             [checked]="item.checked_id || isRequisitoChecked(item.id)"
+                                            [disabled]="id_estado != 1 && id_estado != 0"
                                             (click)="requisito($event, item)" >
                                         <span class="requisito">{{ item.requisito }}</span>
                                     </li>
@@ -146,32 +147,35 @@
         <div class="card-footer">
              <div class="d-flex justify-content-start gap-2 flex-wrap">
                 @if(edicion){     
-                    @if(!observa){
+                    @if(!observa && mostrarFormTarea){
                         <button 
                             type="button" 
-                            class="btn btn-sm btn-aceptar d-flex align-items-center" 
-                            (click)="editar()">
+                            class="btn btn-sm btn-aceptar " 
+                            (click)="editar()"
+                            [disabled]="id_estado != 1">
                             <fa-icon [icon]="faCheck"></fa-icon>
                             <span>Editar tarea</span>
                         </button>
                     } @else {
-                        @if(editarObs){
-                             <button 
-                                type="button" 
-                                class="btn btn-sm btn-aceptar" 
-                                (click)="editarObservacion()">
-                                <fa-icon [icon]="faCheck" ></fa-icon>
-                                <span>Editar observación</span>
-                            </button>
-                        } @else {
-                            <button 
-                                type="button" 
-                                class="btn btn-sm btn-aceptar" 
-                                (click)="crearObs()">
-                                <fa-icon [icon]="faCheck" ></fa-icon>
-                                <span>Crear observación</span>
-                            </button>
-                        }
+                        @if(mostrarFormTarea){
+                            @if(editarObs){
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-aceptar" 
+                                    (click)="editarObservacion()">
+                                    <fa-icon [icon]="faCheck" ></fa-icon>
+                                    <span>Editar observación</span>
+                                </button>
+                            } @else {
+                                <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-aceptar" 
+                                    (click)="crearObs()">
+                                    <fa-icon [icon]="faCheck" ></fa-icon>
+                                    <span>Crear observación</span>
+                                </button>
+                            }
+                        }                        
                     }    
                 } @else {
                     @if(!gurdado && mostrarFormTarea){
@@ -191,6 +195,8 @@
                     <button class="btn btn-sm btn-enlace" (click)="cambiaMostrarFormTarea()">
                         <fa-icon [icon]="faRectangleList" class="me-2"></fa-icon>{{ tituloRequisitos }}<span></span>
                     </button>
+                    <button type="button" class="btn btn-sm btn-cancelar" (click)="cerrar()"><fa-icon
+                    [icon]="faRotateLeft"></fa-icon> Cerrar formulario</button>
                 }
             </div>
         </div>

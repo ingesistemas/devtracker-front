@@ -57,9 +57,10 @@ export class CrearTarea {
   private peticionServicio = inject(PeticionServicio)
   private toastrServicio = inject(ToastrService)
   private router = inject(Router);
-  edicion: boolean = false;
-  observa: boolean = false;
-  editarObs: boolean = false;
+  edicion: boolean = false
+  observa: boolean = false
+  id_estado: number = 0
+  editarObs: boolean = false
   mostrarFormTarea: boolean = true
   tituloRequisitos: string = "Mostrar requisitos"
  /*  edicion = toSignal(this.modalFormularioTareaServicio.edicion$);
@@ -161,6 +162,10 @@ export class CrearTarea {
         calidad: this.datos.calidad,
         hrs_estimadas: this.datos.hrs_estimadas
       });
+      this.id_estado = this.datos.id_estado
+      if(this.datos.id_estado != 1){
+        this.formularioTareas.disable();
+      }
       this.idTareaCreada = this.datos.id
       this.usuarioActual = this.datos.usuario_asignado.nombre
       if(this.observa){

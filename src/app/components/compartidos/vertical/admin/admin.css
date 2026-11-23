@@ -1,3 +1,11 @@
+.accordion-body{
+}
+
+#canvasAdmin{
+    background-color: rgb(241, 244, 246) !important;
+    box-shadow: rgb(38, 57, 77) 20px 5px 30px -10px;
+}
+
 ul {
     list-style: none;
     padding-bottom: 25px;
@@ -5,11 +13,10 @@ ul {
 
 li{
     padding: 8px;
-    color: rgb(1, 80, 125) !important;
-}
+    color: rgb(1, 80, 125) !important;}
 
 li:hover{
-    background-color: rgb(238, 238, 238);
+    background-color: rgb(225, 225, 225);
     cursor: pointer;
 }
 

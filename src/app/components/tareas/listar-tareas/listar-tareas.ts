@@ -33,7 +33,7 @@ import { CronometroServicio } from '../../../servicios/cronometro-servicio';
 import { ThisReceiver } from '@angular/compiler';
 import { Pipe } from '@angular/core';
 import { TiempoFormatoPipe } from "../../../pipes/tiempo-formato-pipe";
-import { min } from 'rxjs';
+import { firstValueFrom, min } from 'rxjs';
 import { ModalConfirma } from '../../compartidos/modal-confirma/modal-confirma';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalFormularioTareaServicio } from '../../../servicios/modal-formulario-tarea';
@@ -544,86 +544,114 @@ export class ListarTareas {
     })
   }
 
-  cambiarEstadoTarea(row: any, checked: boolean): void {
-    this.cronometroServicio.restaurar()
-    const tareaActiva = this.tareas.find((tarea: any) => 
-      tarea.cronometro == 1 && tarea.usuario_asignado?.id === this.id_usuario
-    ) ?? null;
-
-     const tareaInactiva = this.tareas.find((tarea: any) => 
-      tarea.cronometro == 0 && tarea.usuario_asignado?.id === this.id_usuario
-    ) ?? null;
-
-    this.modalCargandoServicio.abrirModal(true);
-    this.peticionServicio.peticion('/tareas/cronometro', row, 'POST')
-    .subscribe({
-      next: (resp) => {  
-       
-        if (resp.error) {
-          this.modalMensajeServicio.abrirModal({
-            "tipo": "error",
-            "titulo": "Error:",
-            "mensaje": resp.mensaje
-          });
-           
-        } else {          
-          row.cronometro = (checked ? 1 : 0)
-          this.tareas.forEach(tarea => {
-            if(row.id != tarea.id && (tarea.id_estado == 2 || tarea.id_estado == 7)){
-              if(row.id_estado == 2 || row.id_estado == 7 || row.id_estado == 1){
-                tarea.id_estado = 7
-                tarea.estado.id = 7
-                tarea.estado.estado = 'Pausa'
-
-                row.id_estado = 7
-                row.estado.id = 7
-                row.estado.estado = 'Pausa'  
-              }                              
-            }
-            if(row.id != tarea.id){
-              tarea.cronometro = 0; 
-            }
-            
-            let horas = (this.cronometroServicio.horaActual() * 60)
-            let minutos = (this.cronometroServicio.minutoActual())
-                     
-            if(tareaActiva != null){
-              if(tarea.id == tareaActiva.id) {
-                tarea.tiempo = (horas + minutos)  
-              }
-            } 
-          });         
-          
-          let horas = 0
-          let minutos = 0
-          let tiempo = 0
-          let fecha = new Date()
-          if (row.cronometro == 0){
-            this.tareaCronometroServicio.setTarea('')
-            this.datosTempServicio.setTareaActiva(0, fecha, 0)
-            this.cronometroServicio.setActualizarDatos(0, 0, fecha)
-            row.id_estado = 7
-            row.estado.id = 7
-            row.estado.estado = 'Pausa' 
-          } else {
-            let horas = (this.cronometroServicio.horaActual() * 60)
-            let minutos = (this.cronometroServicio.minutoActual())
-            let tiempo = (row.tiempo + horas + minutos)
-            this.datosTempServicio.setTareaActiva(row.id, row.fec_ini, tiempo)
-            this.tareaCronometroServicio.setTarea(row.nombre)
-            this.cronometroServicio.setActualizarDatos(row.id, row.tiempo, fecha)
-            row.id_estado = 2
-            row.estado.id = 2
-            row.estado.estado = 'Desarrollo'
+  async cambiarEstadoTarea(row: any, event: any) { // Recibimos el evento completo
+    let checked = event.checked
+    let mensaje = ""
+    let respuesta: boolean = false
+    
+    if(row.id_estado == 1){
+      mensaje = "Al confirmar, se activará el cronómetro automático y los datos de alcance, complejidad y tiempo estimado quedarán bloqueados para preservar la integridad de las métricas. Se recomienda ingresar a la opcón EDITAR y verifiques que la información sea correcta antes de continuar."
+      // Ahora sí funciona porque la función es 'async'
+      const resultado = await firstValueFrom(
+        this.dialogConfirm.open(ModalConfirma, {
+          width: '400px',
+          data: {
+            title: '¿Iniciar desarrollo de esta tarea? ',
+            message: mensaje,
+            confirmText: 'Sí',
+            cancelText: 'No'
           }
-          this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
+        }).afterClosed()
+      );
 
+      respuesta = resultado;
+    } else {
+      respuesta = true;
+    }
+    alert(respuesta)
+    if(respuesta){
+      // --- TODO TU CÓDIGO DE ÉXITO QUEDE IGUAL ---
+      this.cronometroServicio.restaurar()
+      const tareaActiva = this.tareas.find((tarea: any) => 
+        tarea.cronometro == 1 && tarea.usuario_asignado?.id === this.id_usuario
+      ) ?? null;
+
+      const tareaInactiva = this.tareas.find((tarea: any) => 
+        tarea.cronometro == 0 && tarea.usuario_asignado?.id === this.id_usuario
+      ) ?? null;
+
+      this.modalCargandoServicio.abrirModal(true);
+      this.peticionServicio.peticion('/tareas/cronometro', row, 'POST')
+      .subscribe({
+        next: (resp) => {  
+          if (resp.error) {
+            this.modalMensajeServicio.abrirModal({
+              "tipo": "error",
+              "titulo": "Error:",
+              "mensaje": resp.mensaje
+            });
+            // Si hubo error en backend, también apagamos el check visualmente por seguridad
+            event.source.checked = false; 
+          } else {          
+            row.cronometro = (checked ? 1 : 0)
+            this.tareas.forEach(tarea => {
+              if(row.id != tarea.id && (tarea.id_estado == 2 || tarea.id_estado == 7)){
+                if(row.id_estado == 2 || row.id_estado == 7 || row.id_estado == 1){
+                  tarea.id_estado = 7
+                  tarea.estado.id = 7
+                  tarea.estado.estado = 'Pausa'
+
+                  row.id_estado = 7
+                  row.estado.id = 7
+                  row.estado.estado = 'Pausa'  
+                }                             
+              }
+              if(row.id != tarea.id){
+                tarea.cronometro = 0; 
+              }
+              
+              let horas = (this.cronometroServicio.horaActual() * 60)
+              let minutos = (this.cronometroServicio.minutoActual())
+                  
+              if(tareaActiva != null){
+                if(tarea.id == tareaActiva.id) {
+                  tarea.tiempo = (horas + minutos)  
+                }
+              } 
+            });         
+            
+            let fecha = new Date()
+            if (row.cronometro == 0){
+              this.tareaCronometroServicio.setTarea('')
+              this.datosTempServicio.setTareaActiva(0, fecha, 0)
+              this.cronometroServicio.setActualizarDatos(0, 0, fecha)
+              row.id_estado = 7
+              row.estado.id = 7
+              row.estado.estado = 'Pausa' 
+            } else {
+              let horas = (this.cronometroServicio.horaActual() * 60)
+              let minutos = (this.cronometroServicio.minutoActual())
+              let tiempo = (row.tiempo + horas + minutos)
+              this.datosTempServicio.setTareaActiva(row.id, row.fec_ini, tiempo)
+              this.tareaCronometroServicio.setTarea(row.nombre)
+              this.cronometroServicio.setActualizarDatos(row.id, row.tiempo, fecha)
+              row.id_estado = 2
+              row.estado.id = 2
+              row.estado.estado = 'Desarrollo'
+            }
+            this.toastrServicio.success(resp.mensaje, "Aviso:", { toastClass: 'ngx-toastr toast-ancho' });
+          }
+        },
+        complete: () => {
+          this.modalCargandoServicio.abrirModal(false);
         }
-      },
-      complete: () => {
-        this.modalCargandoServicio.abrirModal(false);
-      }
-    });
+      });
+
+    } else {
+      // === AQUÍ ESTÁ LA SOLUCIÓN CUANDO DAN "REVISAR TAREA" (CANCELAN) ===
+      row.id_estado = 1;
+      event.source.checked = false; // Fuerza a que el interruptor vuelva a apagarse visualmente
+    }
   }
 
   abrirConfirmacion(tarea: ITarea): void {

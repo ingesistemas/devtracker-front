@@ -1,134 +1,252 @@
-<!DOCTYPE html>
-<html lang="es">
+<main class="main-wrapper" style="margin-top: 50px;">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>devTracker — Plataforma Clara de Trazabilidad</title>
+  <!-- 1. ENCABEZADO DE BIENVENIDA -->
+  <div class="page-header reveal-up">
+    <div class="header-badge">
+      <i class="fa-solid fa-shield-halved"></i> Plataforma Integral de Control
+    </div>
+    <h1 class="page-title">Monitoreo y Trazabilidad</h1>
+    <p class="page-desc">Monitoreo y Trazabilidad Operativa en Tiempo Real</p>
+    <p class="header-body">
+        Transforme radicalmente la gestión integral de su organización con <span class="DevTracker">DevTracker</span>. Nuestra plataforma trasciende el desarrollo de software 
+        para consolidarse como el entorno corporativo definitivo para la planificación, ejecución, seguimiento y control de proyectos en 
+        cualquier sector industrial, administrativo o de servicios.
+    </p>
+    
+    <p class="header-body">
+        Diseñado para centralizar operaciones complejas, <span class="DevTracker">DevTracker</span> permite administrar de manera unificada 
+        empresas, estructuras jerárquicas, 
+        usuarios, roles y permisos avanzados, así como requerimientos, tareas, incidencias, versiones, documentación técnica y manuales 
+        operativos, garantizando una trazabilidad absoluta de cada actividad y transición.
+    </p>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <p class="header-body">
+        Gracias a su ecosistema de paneles de control inteligentes, métricas en tiempo real e <strong>indicadores clave de rendimiento</strong> (KPIs), 
+        la plataforma ofrece una perspectiva ejecutiva y precisa del estado de los proyectos. Esto elimina la fricción operativa, 
+        potencia la colaboración transversal entre equipos multidisciplinarios y facilita una toma de decisiones ágil y fundamentada, 
+        asegurando entregas con los más altos estándares de calidad, productividad y eficiencia corporativa.
+    </p>
 
-    <style>
+  </div>
 
-    </style>
-</head>
+  <!-- 2. CARRUSEL LUMINOSO INTERACTIVO -->
+  <section class="carousel-card reveal-up">
+    @for (slide of slides; track slide.titulo; let i = $index) {
+      <div class="carousel-slide" [class.active]="i === currentSlide">
+        <div class="slide-info">
+          <span class="slide-badge">{{ slide.badge }}</span>
+          <h2 class="slide-title">{{ slide.titulo }}</h2>
+          <p class="slide-text">{{ slide.texto }}</p>
+        </div>
+        <div class="slide-image">
+          <img [src]="slide.imagen" [alt]="slide.alt">
+        </div>
+      </div>
+    }
 
-<body>
+    <div class="carousel-nav-btns">
+      <button type="button" class="c-btn" (click)="prevSlide()" aria-label="Anterior">&#8249;</button>
+      <button type="button" class="c-btn" (click)="nextSlide()" aria-label="Siguiente">&#8250;</button>
+    </div>
+  </section>
 
+  <!-- 3. TARJETAS DE INFORMACIÓN E IMÁGENES (MÓDULOS CLAVE) -->
+  <section id="modulos" class="section-padding">
+    <div class="text-center mb-5 reveal-up">
+      <span class="text-primary fw-bold text-uppercase small" style="letter-spacing: 1px;">Arquitectura Operativa</span>
+      <h2 class="fw-bold text-dark mt-2">Diseñado para la precisión, no para el relleno</h2>
+      <p class="text-secondary mt-2 mx-auto" style="max-width: 680px;">
+        Cada componente de DevTracker responde a una necesidad real de gerencia, calidad y control de equipos multidisciplinarios.
+      </p>
+    </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-wrapper">
-
-        <div class="page-header">
-            <h1 class="page-title">Monitoreo y Trazabilidad</h1>
-            <p class="page-desc">Estado actual de despliegues, módulos y desarrollo de software en tiempo real.</p>
-            <p>
-                Transforme la manera en que su equipo desarrolla software con <span class="DevTracker">DevTracker</span>. 
-                Nuestra plataforma reúne en un solo entorno la planificación, ejecución, seguimiento y control de proyectos de desarrollo, 
-                permitiendo gestionar empresas, usuarios, roles, requerimientos, tareas, incidencias, versiones, documentación y auditorías, 
-                con trazabilidad total de cada actividad. Gracias a sus paneles de control, métricas e indicadores, 
-                <span class="DevTracker">DevTracker</span> brinda una visión 
-                completa del estado de los proyectos, mejora la colaboración entre los equipos y facilita la toma de decisiones para entregar 
-                productos de software con mayor calidad, productividad y eficiencia.
-            </p>
+    <div class="row g-4">
+        <!-- Tarjeta 1 -->
+        <div class="col-md-6 col-lg-4 reveal-up" style="transition-delay: 0.1s;">
+            <div class="feature-card">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Progreso automático">
+                <span class="card-badge-overlay"><i class="fa-solid fa-chart-line me-1"></i> Tiempo Real</span>
+            </div>
+            <div class="p-4">
+                <div class="feature-icon-box">
+                <i class="fa-solid fa-bars-progress"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Progreso Ponderado Automático</h5>
+                <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                Olvídate de porcentajes subjetivos. Las barras de avance de cada requisito se recalculan matemáticamente según el estado real y aprobaciones de sus tareas hijas.
+                </p>
+            </div>
+            </div>
         </div>
 
-        <!-- CARRUSEL LUMINOSO -->
-        <section class="carousel-card">
-            <div class="carousel-slide active">
-                <div class="slide-info">
-                    <span class="slide-badge">Sprint Activo</span>
-                    <h2 class="slide-title">Módulo de Autenticación Centralizada</h2>
-                    <p class="slide-text">Actualización del esquema de tokens e integración de logs de trazabilidad
-                        detallados para auditorías de seguridad.</p>
+        <!-- Tarjeta 2 -->
+        <div class="col-md-6 col-lg-4 reveal-up" style="transition-delay: 0.2s;">
+            <div class="feature-card">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="Auditoría QA">
+                <span class="card-badge-overlay"><i class="fa-solid fa-magnifying-glass me-1"></i> Auditoría QA</span>
+            </div>
+            <div class="p-4">
+                <div class="feature-icon-box">
+                <i class="fa-solid fa-clipboard-check"></i>
                 </div>
-                <div class="slide-image">
-                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=800&auto=format&fit=crop"
-                        alt="Desarrollo limpio">
+                <h5 class="fw-bold text-dark">Historial y Justificación de Rechazos</h5>
+                <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                Trazabilidad inmutable de cada transición. Registra quién envió a calidad, quién aprobó o rechazó y consulta al instante la justificación exacta de cada devolución.
+                </p>
+            </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="col-md-6 col-lg-4 reveal-up" style="transition-delay: 0.3s;">
+            <div class="feature-card">
+            <div class="card-img-wrapper">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Grupos de Trabajo">
+                <span class="card-badge-overlay"><i class="fa-solid fa-users-gear me-1"></i> Multi-Área</span>
+            </div>
+            <div class="p-4">
+                <div class="feature-icon-box">
+                <i class="fa-solid fa-sitemap"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Grupos de Trabajo Flexibles</h5>
+                <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                Ideal para Desarrollo, Marketing, Legal o Administración. Segmenta equipos por grupos operativos manteniendo métricas uniformes y filtros cruzados instantáneos.
+                </p>
+            </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 4: Integración con Git -->
+        <div class="col-md-6 col-lg-4 reveal-up" style="transition-delay: 0.4s;">
+            <div class="feature-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?auto=format&fit=crop&w=800&q=80" alt="Integración con Git">
+                    <span class="card-badge-overlay"><i class="fa-solid fa-code-branch me-1"></i> Sincronización Git</span>
+                </div>
+                <div class="p-4">
+                    <div class="feature-icon-box">
+                    <i class="fa-solid fa-code-branch"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Trazabilidad Directa con Git</h5>
+                    <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                    Vincula cada tarea y requisito directamente con commits y repositorios. Visualiza la metadata de código asociada sin salir de la plataforma para un control total del desarrollo.
+                    </p>
                 </div>
             </div>
+        </div>
 
-            <div class="carousel-slide">
-                <div class="slide-info">
-                    <span class="slide-badge">Optimización</span>
-                    <h2 class="slide-title">Estructura del Proyecto Prisma</h2>
-                    <p class="slide-text">Refactorización de la capa visual para garantizar una navegación fluida y
-                        tiempos de carga mínimos en la plataforma.</p>
+        <!-- Tarjeta 5: Versatilidad Operativa Multiuso -->
+        <div class="col-md-6 col-lg-4 reveal-up" style="transition-delay: 0.5s;">
+            <div class="feature-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80" alt="Adaptabilidad operativa y seguimiento general">
+                    <span class="card-badge-overlay"><i class="fa-solid fa-layer-group me-1"></i> Multi-Propósito</span>
                 </div>
-                <div class="slide-image">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop"
-                        alt="Análisis de datos">
+                <div class="p-4">
+                    <div class="feature-icon-box">
+                    <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Adaptable a Cualquier Tarea</h5>
+                    <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                    No se limita a código. Aplica su motor de épicas y requisitos en proyectos administrativos, legales, de marketing o salud, manteniendo el mismo rigor de control y trazabilidad.
+                    </p>
                 </div>
             </div>
+        </div>
 
-            <div class="carousel-nav-btns">
-                <button class="c-btn" id="prevSlide" aria-label="Anterior">&#8249;</button>
-                <button class="c-btn" id="nextSlide" aria-label="Siguiente">&#8250;</button>
+        <!-- Tarjeta 6: Jerarquía y Documentación Adjunta -->
+        <div class="col-md-6 col-lg-4 reveal-up" style="transition-delay: 0.6s;">
+            <div class="feature-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80" alt="Gestión documental y jerarquía de tareas">
+                    <span class="card-badge-overlay"><i class="fa-solid fa-folder-open me-1"></i> Épica • Requisito • Tarea</span>
+                </div>
+                <div class="p-4">
+                    <div class="feature-icon-box">
+                    <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Estructura y Documentación Total</h5>
+                    <p class="text-secondary small mb-0" style="line-height: 1.65;">
+                    Organiza el trabajo en Épicas, Requisitos y Tareas. Permite adjuntar texto enriquecido, archivos PDF y videos de soporte para sustentar con total claridad tanto los requerimientos como las entregas.
+                    </p>
+                </div>
             </div>
-        </section>
+        </div>
 
-        <!-- TARJETAS DE INFORMACIÓN (BENTO/GRID CLARO) -->
-        <section class="grid-cards">
+        <!-- Tarjeta 12 Columnas: Resumen Ejecutivo y Llamado a la Acción -->
+        <div class="col-12 reveal-up" style="transition-delay: 0.7s;">
+            <div class="feature-card-info p-4 p-lg-5" style="overflow: hidden;"> <!-- overflow: hidden evita que el contenedor colapse por el float -->
+                
+                <!-- Imagen flotada para que el texto la rodee -->
+                <div class="card-img-wrapper float-md-start me-md-4 mb-3 mb-md-0" style="width: 45%; min-height: 300px;">
+                   <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="DevTracker Analítica y Métricas" class="w-100 h-100 object-fit-cover rounded">
+                    <span class="card-badge-overlay"><i class="fa-solid fa-shield-halved me-1"></i> Solución Enterprise</span>
+                </div>
 
-            <!-- Card 1 -->
-            <article class="info-card">
-                <div class="card-thumb">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format&fit=crop"
-                        alt="Analytics UI">
+                <!-- Contenido que envolverá la imagen -->
+                <div class="feature-content">
+                    <div class="feature-icon-box mb-3">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-3" style="font-size: 1.5rem;">DevTracker: Trazabilidad y Control Operativo sin Fricción</h3>
+                    <p class="text-secondary mb-4" style="line-height: 1.7; text-align: justify;">
+                        Diseñado para ofrecer una experiencia intuitiva y sumamente fácil de operar, DevTracker elimina la fricción y la complejidad innecesaria para centralizar el control absoluto de sus operaciones. Su arquitectura integra un riguroso flujo de 11 estados blindados respaldados por un historial de transiciones inmutable y un sistema completo de observaciones por tarea para auditorías totalmente transparentes. Cuenta con un cronómetro integrado de alta precisión que contrasta en tiempo real las horas estimadas frente a las reales, complementado con flujos avanzados de gestión de calidad (QA) y sincronización bidireccional directa con Git. Estructurado jerárquicamente a través de Épicas, Requisitos y Tareas con soporte nativo para texto enriquecido, documentos PDF y recursos multimedia en video, DevTracker se despliega como la solución definitiva y versátil que se adapta con fluidez tanto al desarrollo de software de alto nivel como a la gestión y seguimiento de cualquier proceso corporativo o multidisciplinario.
+                    </p>
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <a href="#demo" class="btn btn-primary fw-semibold px-4 py-2" data-bs-toggle="modal" data-bs-target="#demoModal" style="background: var(--dt-primary); border: none; border-radius: 8px;">
+                            <i class="fa-solid fa-rocket me-2"></i> Solicitar Demostración
+                        </a>
+                        <span class="text-muted small"><i class="fa-solid fa-circle-check text-success me-1"></i> Potente y fácil de usar</span>
+                    </div>
                 </div>
-                <div class="card-header-flex">
-                    <h3 class="card-title">Módulo EDUCASH</h3>
-                    <span class="status-tag tag-success">Completado</span>
-                </div>
-                <p class="card-desc">Herramienta administrativa para gestión de contenidos y métricas operativas.</p>
-                <div class="card-meta">
-                    <span class="code-tag">v2.1.0</span>
-                    <span>Actualizado hoy</span>
-                </div>
-            </article>
 
-            <!-- Card 2 -->
-            <article class="card info-card">
-                <div class="card-thumb">
-                    <img src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=600&auto=format&fit=crop"
-                        alt="Web interface">
-                </div>
-                <div class="card-header-flex">
-                    <h3 class="card-title">Sitio Prisma de Luz</h3>
-                    <span class="status-tag tag-warning">En Revisión</span>
-                </div>
-                <p class="card-desc">Plataforma conceptual centrada en la divulgación de contenidos y diseño ligero.</p>
-                <div class="card-meta">
-                    <span class="code-tag">v1.4.2</span>
-                    <span>Hace 2 horas</span>
-                </div>
-            </article>
+            </div>
+        </div>
+    </div>
+  </section>
 
-            <!-- Card 3 -->
-            <article class="info-card">
-                <div class="card-thumb">
-                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop"
-                        alt="Base de datos">
-                </div>
-                <div class="card-header-flex">
-                    <h3 class="card-title">Servicios de API Core</h3>
-                    <span class="status-tag tag-success">Estable</span>
-                </div>
-                <p class="card-desc">Endpoints de integración con validaciones de datos estructurados y respuestas
-                    rápidas.</p>
-                <div class="card-meta">
-                    <span class="code-tag">v3.0.1</span>
-                    <span>Ayer</span>
-                </div>
-            </article>
+  <!-- 4. CICLO DE VIDA DE 11 ESTADOS INTERACTIVO -->
+  <section id="flujo" class="workflow-section">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-5 reveal-left">
+        <span class="text-primary fw-bold text-uppercase small" style="letter-spacing: 1px;">Gobernanza de Procesos</span>
+        <h2 class="fw-bold text-dark mt-2">11 Estados Blindados para Cero Incoherencias</h2>
+        <p class="text-secondary mt-3" style="line-height: 1.7;">
+            A diferencia de otras herramientas donde cada usuario altera los tableros de manera arbitraria, DevTracker protege la integridad 
+            de la historia de usuario mediante un flujo estandarizado con puntos de control de calidad y despliegue, integrando además de manera
+            automática un cronómetro de precisión para calcular en tiempo real los progresos de cada uno de los estados.
 
-        </section>
+        </p>
 
-    </main>
-</body>
+        <!-- Caja dinámica que cambia al hacer clic -->
+        <div class="state-info-box mt-3">
+          <strong class="text-primary d-block mb-1">
+            <i class="fa-solid fa-circle-check me-1"></i> Estado: {{ estadoSeleccionado.nombre }}
+          </strong>
+          <span class="small text-secondary">{{ estadoSeleccionado.descripcion }}</span>
+        </div>
+      </div>
 
-</html>
+      <div class="col-lg-7 reveal-right">
+        <div class="p-4 bg-white rounded-4 border shadow-sm">
+          <h6 class="fw-bold text-dark mb-3">
+            <i class="fa-solid fa-route text-primary me-2"></i>Flujo Oficial de Tareas DevTracker:
+          </h6>
+          <div>
+            @for (est of estados; track est.nombre) {
+              <span 
+                class="state-pill" 
+                [class.active]="estadoSeleccionado.nombre === est.nombre"
+                (click)="seleccionarEstado(est)">
+                <span class="state-dot" [ngClass]="est.colorDot"></span> {{ est.nombre }}
+              </span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

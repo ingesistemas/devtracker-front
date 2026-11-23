@@ -5,9 +5,14 @@
             <fa-icon [icon]="faBroom" class="me-2"></fa-icon>Limpiar Filtros<span></span>
         </button>
 
+        <button type="button" class="btn btn-sm btn-aceptar d-flex align-items-center" (click)="generarPdfDesdeFrontend()">
+            <fa-icon [icon]="faFilePdf" class="me-3"></fa-icon><span>Generar PDF</span>
+        </button>
+
         <button type="button" class="btn btn-sm btn-aceptar d-flex align-items-center" (click)="crear()">
             <fa-icon [icon]="faSquarePlus" class="me-3"></fa-icon><span>Nueva épica</span>
         </button>
+        
     </div>
 </div> 
 
@@ -321,26 +326,52 @@
                                                 <li class="list-group-item p-3 mb-5 rounded" 
                                                 [ngClass]="even ? 'bg-light-li' : 'bg-white'">
                                                     <div class="mb-3 border-bottom pb-2">
-                                                    
-                                                        <span class="nombreTarea texto-subrayado">{{ tarea.nombre }} [ {{ tarea.estado.estado }} ]</span> 
 
-                                                        <span class="subTitulo" [style.backgroundColor]="getPrioridadColorBage(tarea.id_complejidad)" 
-                                                        [style.color]="getPrioridadTextColor(tarea.id_complejidad)"
-                                                        class="badge rounded-pill">Complejidad: {{tarea.nom_complejidad}}
-                                                        </span>
-                                                        
-                                                        <span class="subTitulo" [style.backgroundColor]="getPrioridadColorBage(tarea.id_prioridad)"  
-                                                        [style.color]="getPrioridadTextColor(tarea.id_prioridad)"
-                                                        class="badge rounded-pill">Prioridad: {{tarea.nom_prioridad}} 
-                                                        </span>
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-12">
+                                                                <span (click)="modalHistorial(tarea, row.nombre)"><fa-icon [icon]="faBinoculars" class="ico_historial" 
+                                                                    matTooltip="Consultar historial de la tarea."
+                                                                    matTooltipClass="mi-tooltip-personalizado"></fa-icon>
+                                                                </span>
+                                                                <span class="nombreTarea">{{ tarea.nombre }} [ {{ tarea.estado.estado }} ]</span> 
 
-                                                        <span class="nombreCreo"> Fecha estimada {{ tarea.f_pentrega | date:'dd/MM/yyyy':'UTC' }} - {{ tarea.hrs_estimadas }} horas</span>
+                                                                <div class="flex-grow-1 d-flex align-items-center gap-2 fila-progreso">
+                                                                    <mat-progress-bar
+                                                                        class="custom-progress"
+                                                                        mode="determinate"
+                                                                        [value]="getPorcentajeTarea(tarea.tiempo, tarea.hrs_estimadas)">
+                                                                    </mat-progress-bar>
+                                                                    <span class="badge-porcentaje">
+                                                                        {{ getPorcentajeTarea(tarea.tiempo, tarea.hrs_estimadas) }}%
+                                                                    </span>
+                                                                </div>
 
-                                                        <span class="nombreCreo"> Creada por: {{ tarea.usuario_creo.nombre }} - {{ tarea.created_at | date:'dd/MM/yyyy':'UTC' }}</span>
+                                                                <span class="subTitulo" [style.backgroundColor]="getPrioridadColorBage(tarea.id_complejidad)" 
+                                                                [style.color]="getPrioridadTextColor(tarea.id_complejidad)"
+                                                                class="badge sombraDatosTarea d-inline-block mb-2">Complejidad: {{tarea.nom_complejidad}}
+                                                                </span>
+                                                                
+                                                                <span class="subTitulo" [style.backgroundColor]="getPrioridadColorBage(tarea.id_prioridad)"  
+                                                                [style.color]="getPrioridadTextColor(tarea.id_prioridad)"
+                                                                class="badge sombraDatosTarea d-inline-block mb-2">Prioridad: {{tarea.nom_prioridad}} 
+                                                                </span>
+                                                                
+                                                            
+                                                                <span class="nombreCreo datosTareas sombraDatosTarea d-inline-block mb-2"> Fecha estimada {{ tarea.f_pentrega | date:'dd/MM/yyyy':'UTC' }} - {{ tarea.hrs_estimadas }} horas</span>
 
-                                                        <span (click)="modalHistorial(tarea, row.nombre)"><fa-icon [icon]="faBinoculars" class="ico_historial" 
-                                                        matTooltip="Consultar historial de la tarea."
-                                                        matTooltipClass="mi-tooltip-personalizado"></fa-icon></span>
+                                                                <span class="nombreCreo datosTareas sombraDatosTarea d-inline-block mb-2" 
+                                                                    [class.text-danger]="(tarea.tiempo ?? 0) > tarea.hrs_estimadas" 
+                                                                    [class.text-success]="(tarea.tiempo ?? 0) > tarea.hrs_estimadas"> {{getHrsDesarrolloTarea( tarea.tiempo )}} hrs desarrollo
+                                                                </span>
+                                                                
+                                                                <span class="nombreCreo datosTareas sombraDatosTarea d-inline-block mb-2"> Creada por: {{ tarea.usuario_creo.nombre }} - {{ tarea.created_at | date:'dd/MM/yyyy':'UTC' }}</span>
+
+                                                                @if(tarea.fecha_asignacion){
+                                                                    <span class="nombreCreo datosTareas sombraDatosTarea d-inline-block mb-2"> Reasiganada a: {{ tarea.usuario_asignado.nombre }} - {{ tarea.fecha_asignacion | date:'dd/MM/yyyy HH:mm':'UTC'  }} </span>
+                                                                }                                                                
+
+                                                            </div>
+                                                        </div>
 
                                                         <!-- Bucle de Observaciones de ESTA tarea -->
                                                         @if (tarea.observaciones && tarea.observaciones.length > 0) {
@@ -348,7 +379,7 @@
                                                                 @for (obs of tarea.observaciones; track obs.id) {
                                                                     <li class="list-group-item bg-transparent mt-1">
                                                                         <strong>{{ obs.creador?.nombre || 'Usuario' }}</strong> 
-                                                                        <small class="text-muted"> ({{ obs.created_at | date:'dd/MM/yyyy HH:mm' }})</small>: 
+                                                                        <small class="text-muted"> ({{ obs.created_at | date:'dd/MM/yyyy HH:mm' }})</small>:
                                                                         <br>
                                                                         <span>{{ obs.observacion }}</span> 
                                                                     </li>

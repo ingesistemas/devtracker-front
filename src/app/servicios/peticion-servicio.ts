@@ -88,4 +88,23 @@ export class PeticionServicio {
       catchError(err => throwError(() => err.error)) // <-- Cambio
     );
   }
+
+  peticionPDF(url: string, body: any, options: any = {}) {
+    const token = localStorage.getItem('token') || '';
+    
+    // 1. Creamos las opciones base incluyendo las cabeceras con el token
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': 'Bearer ' + token
+      }),
+      ...options // 2. Aquí se inyecta { responseType: 'blob' } de forma limpia
+    };
+
+    // 3. El orden correcto de post es: (url, body, options)
+    return this.http.post(this.apiUrl + url, body, httpOptions)
+      .pipe(
+        map(res => res),
+        catchError(err => throwError(() => err.error))
+      );
+  }
 }

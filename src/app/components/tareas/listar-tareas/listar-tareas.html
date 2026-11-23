@@ -116,12 +116,13 @@
                 <ng-container matColumnDef="accion">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
                     <td mat-cell *matCellDef="let row">
-                        @if(row.id_reasig == id_usuario  && row.id_estado != '12'){
-                            <mat-slide-toggle class="toggle-compacto" [checked]="row.cronometro != 0" 
-                            (change)="cambiarEstadoTarea(row, $event.checked)"
-                            [matTooltip]="(row.id_estado == 2 || row.id_estado == 7) ? 'Pausar tarea' : 'Empezar o continuar desarrollando la tarea.'"
-                            matTooltipClass="mi-tooltip-personalizado"
-                            matTooltipPosition="right">
+                        @if(row.id_reasig == id_usuario && row.id_estado != '12'){
+                            <mat-slide-toggle class="toggle-compacto" 
+                                [checked]="row.cronometro != 0" 
+                                (change)="cambiarEstadoTarea(row, $event)"
+                                [matTooltip]="(row.id_estado == 2 || row.id_estado == 7) ? 'Pausar tarea' : 'Empezar o continuar desarrollando la tarea.'"
+                                matTooltipClass="mi-tooltip-personalizado"
+                                matTooltipPosition="right">
                             </mat-slide-toggle> 
                         }
                     </td>
